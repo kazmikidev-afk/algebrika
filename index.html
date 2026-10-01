@@ -31,6 +31,11 @@
 .math-inline{direction:ltr;unicode-bidi:isolate;display:inline-block;font:inherit;max-width:100%;vertical-align:baseline}
 svg text{direction:ltr;unicode-bidi:plaintext}
 .vexpr,.vrow,.vtab,.labtable{direction:ltr;unicode-bidi:isolate}
+</style><style>/* Fraction bars 2026-10-01: real numerator-over-denominator display for A/B in math runs. */
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;direction:ltr;unicode-bidi:isolate;text-align:center;margin:0 .14em;line-height:1.2;white-space:nowrap;font-variant-numeric:lining-nums}
+.frac>.num{display:block;padding:0 .28em .1em;border-bottom:.09em solid currentColor}
+.frac>.den{display:block;padding:.1em .28em 0}
+.frac .frac{font-size:.9em}
 </style></head><body><a class="skip" href="#topics">דלגו לתוכן</a><header class="wrap top"><div class="brand"><div class="logo">∑</div><div><b>אלגבריקה</b><span> | מעבדת אלגברה לכיתה ח׳</span></div></div><div class="actions"><button class="btn ghost" id="help">איך משתמשים?</button><button class="btn ghost" id="theme" aria-label="החלפת מצב תצוגה">◐</button><button class="btn" id="examBtn">מבחן אישי</button></div></header><main><section class="wrap hero"><div><h1>מגלים את <span>השפה</span><br>של המתמטיקה</h1><p>לומדים רעיון, חוקרים אותו במעבדה, מתרגלים בקצב שלכם ורואים התקדמות אמיתית.</p><div class="actions"><button class="btn" id="continue">המשך מהמקום האחרון</button><button class="btn ghost" id="weak">תרגול נושאים לחיזוק</button></div><p class="save" id="saveState" aria-live="polite">ההתקדמות נשמרת במכשיר הזה</p></div><div class="map"><div><div class="equation">y = mx + b</div><p style="text-align:center;color:var(--muted)">משנים, משוואות, פונקציות וייצוגים - מחוברים בתמונה אחת.</p></div></div></section><section class="wrap summary"><div class="stat"><b id="done">0</b><span>שאלות נכונות</span></div><div class="stat"><b id="accuracy">0%</b><span>דיוק בניסיון ראשון</span></div><div class="stat"><b id="mastered">0</b><span>נושאים בתהליך</span></div><div class="stat"><b id="total">167</b><span>שאלות במאגר</span></div></section><section class="wrap feature-strip" aria-label="כלי למידה אישיים"><article class="feature"><b>◎ מסלול חיזוק אישי</b><small>מזהה דפוסי טעויות ובונה רצף קצר וממוקד.</small><button class="btn" id="adaptiveBtn">בניית מסלול</button></article><article class="feature"><b>▣ מצב מורה / הורה</b><small>יוצרים משימה בקובץ, מייבאים אותה ומפיקים דוח ברור.</small><button class="btn ghost" id="teacherBtn">פתיחת מצב ניהול</button></article><article class="feature"><b>★ האתגר היומי</b><small>שאלה אחת בכל יום ורצף הצלחות שנשמר במכשיר.</small><button class="btn ghost" id="dailyBtn">לאתגר של היום</button></article></section><section class="wrap" id="topics"><div class="catalog-head"><div><h2>מפת הלמידה</h2><span style="color:var(--muted)">בחרו נושא והתקדמו מלמידה לחקירה ולתרגול</span></div><input class="search" id="search" placeholder="חיפוש נושא..." aria-label="חיפוש נושא"></div><div class="grid" id="grid"></div></section></main><footer class="footer"><div class="wrap">אלגבריקה • מבוסס על תוכנית כיתה ח׳ ועל למידה פעילה ורב־ייצוגית</div></footer>
 <dialog id="dialog"><div class="modal-head"><div class="modal-title"><span id="dlgIcon"></span><b id="dlgTitle"></b></div><button class="close" id="close" aria-label="סגירה">×</button></div><div class="tabs" role="tablist" aria-label="שלבי הלמידה"><button class="tab active" id="tab-learn" role="tab" aria-selected="true" aria-controls="learnPane" tabindex="0" data-tab="learn">לומדים</button><button class="tab" id="tab-lab" role="tab" aria-selected="false" aria-controls="labPane" tabindex="-1" data-tab="lab">מעבדה</button><button class="tab" id="tab-practice" role="tab" aria-selected="false" aria-controls="practicePane" tabindex="-1" data-tab="practice">מתרגלים</button></div><div class="modal-body"><section class="pane active" id="learnPane" role="tabpanel" aria-labelledby="tab-learn" tabindex="0"></section><section class="pane" id="labPane" role="tabpanel" aria-labelledby="tab-lab" tabindex="0"></section><section class="pane" id="practicePane" role="tabpanel" aria-labelledby="tab-practice" tabindex="0"></section></div></dialog>
 <div class="exam-panel" id="exam"><div class="exam-inner"><div class="actions" style="justify-content:space-between"><h2>מבחן אישי</h2><button class="btn ghost" id="examClose">סגירה</button></div><div id="examBody"></div></div></div>
@@ -379,7 +384,7 @@ const homeRatio=renderHome;renderHome=function(f=''){homeRatio(f);if(!$('#quickR
    Wrap text nodes, not entire Hebrew paragraphs. textContent remains identical,
    so grading, progress exports and assignment imports retain their contracts. */
 (()=>{
-  const run=/[A-Za-z0-9\u00b2\u00b3\u03c0\u221a\u221e(+\-\u2212][A-Za-z0-9\u00b2\u00b3\u03c0\u221a\u221e\s.,:;=+\-\u2212\u00d7\u00f7*/^%!?<>\u2260\u2264\u2265\u2192\u2190\u21d2()\[\]{}]*/g;
+  const run=/[A-Za-z0-9\u00b2\u00b3\u03c0\u221a\u221e(+\-\u2212][A-Za-z0-9\u00b2\u00b3\u03c0\u221a\u221e\s.,:;=+\-\u2212\u00d7\u00f7\u00b7*/^%!?<>\u2260\u2264\u2265\u2192\u2190\u21d2()\[\]{}]*/g;
   function isolate(root){
     if(root.nodeType!==1&&root.nodeType!==3)return;
     if(root.nodeType===1&&root.closest('script,style,textarea,input,select,option,svg,bdi,.math,.math-inline'))return;
@@ -406,6 +411,86 @@ const homeRatio=renderHome;renderHome=function(f=''){homeRatio(f);if(!$('#quickR
       else for(const node of record.addedNodes)isolate(node);
     }
   }).observe(document.body,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+<script>
+/* Fraction bars 2026-10-01. Display only: bank strings, answers, IDs, saved progress and tracking are untouched.
+   A/B inside an LTR math run (.math-inline / .math) is shown as numerator over denominator with a bar. */
+(()=>{
+  const SKIP='script,style,textarea,input,select,option,svg,.frac';
+  const atomRe=/^(?:\d+(?:\.\d+)?|[A-Za-z]|[\u00b2\u00b3\u03c0\u221a\u221e\u00b0]|\^[\u2212-]?\w+)/;
+  function tokenize(s){
+    const t=[];let i=0;
+    while(i<s.length){
+      const c=s[i];
+      if(c==='('){let d=0,j=i;for(;j<s.length;j++){if(s[j]==='(')d++;else if(s[j]===')'){d--;if(!d)break}}
+        if(j<s.length){t.push({k:'g',v:s.slice(i+1,j)});i=j+1;continue}}
+      const m=atomRe.exec(s.slice(i));
+      if(m){t.push({k:'a',v:m[0]});i+=m[0].length;continue}
+      t.push({k:c==='/'?'s':'o',v:c});i++;
+    }
+    return t;
+  }
+  function plain(tok){return tok.map(x=>x.k==='g'?'('+x.v+')':x.v).join('')}
+  function render(str){ // returns array of Nodes
+    const toks=tokenize(str);
+    if(!toks.some(x=>x.k==='s')&&!toks.some(x=>x.k==='g'&&x.v.includes('/')))return [document.createTextNode(str)];
+    const out=[];let buf='';
+    const flush=()=>{if(buf){out.push(document.createTextNode(buf));buf=''}};
+    const term=(a,b)=>{const r=[];let i=a;while(i<b){r.push(toks[i]);i++}return r};
+    const termNodes=(tt,strip)=>{
+      if(strip&&tt.length===1&&tt[0].k==='g')return render(tt[0].v);
+      const res=[];let b2='';
+      for(const x of tt){
+        if(x.k==='g'){if(b2){res.push(document.createTextNode(b2));b2=''}
+          res.push(document.createTextNode('('),...render(x.v),document.createTextNode(')'))}
+        else b2+=x.v;
+      }
+      if(b2)res.push(document.createTextNode(b2));
+      return res;
+    };
+    let i=0;
+    while(i<toks.length){
+      const x=toks[i];
+      if(x.k==='a'||x.k==='g'){
+        let j=i;while(j<toks.length&&(toks[j].k==='a'||toks[j].k==='g'))j++;
+        if(j<toks.length&&toks[j].k==='s'&&j+1<toks.length&&(toks[j+1].k==='a'||toks[j+1].k==='g')){
+          let e=j+1;while(e<toks.length&&(toks[e].k==='a'||toks[e].k==='g'))e++;
+          const numT=term(i,j),denT=term(j+1,e);
+          flush();
+          const f=document.createElement('span');f.className='frac';f.setAttribute('role','math');
+          f.setAttribute('aria-label',plain(numT)+' / '+plain(denT));
+          const n=document.createElement('span');n.className='num';n.append(...termNodes(numT,true));
+          const d=document.createElement('span');d.className='den';d.append(...termNodes(denT,true));
+          f.append(n,d);out.push(f);i=e;continue;
+        }
+        // not a fraction operand: keep text, but still convert fractions inside groups
+        if(x.k==='g'&&x.v.includes('/')){flush();out.push(document.createTextNode('('),...render(x.v),document.createTextNode(')'))}
+        else if(x.k==='g')buf+='('+x.v+')';else buf+=x.v;
+        i++;continue;
+      }
+      buf+=x.v;i++;
+    }
+    flush();return out;
+  }
+  function convert(root){
+    if(root.nodeType!==1&&root.nodeType!==3)return;
+    const el=root.nodeType===1?root:root.parentElement;
+    if(!el||el.closest(SKIP))return;
+    const nodes=[];
+    if(root.nodeType===3)nodes.push(root);
+    else{const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);while(w.nextNode())nodes.push(w.currentNode)}
+    for(const n of nodes){
+      const p=n.parentElement;
+      if(!p||p.closest(SKIP)||!p.closest('.math-inline,.math'))continue;
+      if(!n.nodeValue.includes('/'))continue;
+      const out=render(n.nodeValue);
+      if(out.length===1&&out[0].nodeType===3)continue;
+      const frag=document.createDocumentFragment();frag.append(...out);n.replaceWith(frag);
+    }
+  }
+  convert(document.body);
+  new MutationObserver(rs=>{for(const r of rs){if(r.type==='characterData')convert(r.target);else for(const n of r.addedNodes)convert(n)}}).observe(document.body,{childList:true,subtree:true,characterData:true});
 })();
 </script>
 </body></html>
