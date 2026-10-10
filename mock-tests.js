@@ -1,7 +1,7 @@
 window.MOCK_CFG={id:'mock-test-1',title:'מבחן תרגול 1: יחס, פרופורציה, קנה מידה, אחוזים וחזקות',minutes:45,
 intro:'מבחן תרגול באלגבריקה, בנוי לפי מה שנלמד בשיעורים האחרונים: יחס, פרופורציה, קנה מידה ואחוזים, ובסוף חזקות.',
 getState:()=>state,save:()=>save(),viz:{},
-mount(open){const w=document.getElementById('weak');if(w){const b=document.createElement('button');b.className='btn';b.id='mockHome';b.textContent='מבחן תרגול 1 20 שאלות.';b.onclick=()=>{open();history.replaceState(null,'',location.pathname+location.search+'#mock-test-1')};w.after(b)}},
+mount(open){const w=document.getElementById('weak');if(w){const b=document.createElement('button');b.className='btn';b.id='mockHome';b.textContent='מבחן תרגול ראשון';b.onclick=()=>{open();history.replaceState(null,'',location.pathname+location.search+'#mock-test-1')};w.after(b)}},
 qs:[
 {t:'יחס',p:'בכיתה 12 בנים ו־18 בנות. מה היחס בנים:בנות בצורתו הפשוטה ביותר? כתבו למשל 4:5.',a:['2:3']},
 {t:'יחס',p:'באותה כיתה: איזה חלק מכל התלמידים הן הבנות? כתבו שבר, למשל 1/4.',a:['3/5']},
@@ -67,7 +67,7 @@ function intro(){
   window.avichaiTrack?.mode('quiz','mock');
   const h=store().attempts.slice(-5).reverse();
   shell(`<div class="mw"><div style="display:flex;justify-content:space-between;align-items:center"><h2>${C.title}</h2><button class="mbtn g" id="mClose">סגירה</button></div>
-  <div class="mc"><p>${C.intro}</p><ul style="line-height:1.9;padding-inline-start:20px"><li>${C.qs.length} שאלות, בערך ${C.minutes} דקות.</li><li>בזמן המבחן אין רמזים ואין משוב. אפשר לחזור ולשנות תשובה עד ההגשה.</li><li>בסוף רואים ציון, תשובה נכונה לכל שאלה ופירוט לפי נושא.</li><li>זה תרגול לקראת מבחן המתמטיקה, ולא מיקוד רשמי של המורה.</li><li>התשובות הכתובות: מספר או יחס (למשל 5 או 2:3), בלי יחידות.</li></ul>
+  <div class="mc"><p>${C.intro}</p><ul style="line-height:1.9;padding-inline-start:20px"><li>${C.qs.length} שאלות, בערך ${C.minutes} דקות.</li><li>בזמן המבחן אין רמזים ואין משוב. אפשר לחזור ולשנות תשובה עד ההגשה.</li><li>בסוף רואים ציון, תשובה נכונה לכל שאלה ופירוט לפי נושא.</li><li>זה תרגול לקראת מבחן המתמטיקה, ולא מיקוד רשמי של המורה.</li><li>התשובות הכתובות הן מספר, שבר או יחס, למשל 5 או 2:3, ובלי יחידות מידה.</li></ul>
   <button class="mbtn" id="mStart">התחלת המבחן</button></div>
   ${h.length?`<div class="mc"><h3>ניסיונות קודמים</h3><table>${h.map(a=>`<tr><td>${new Date(a.date).toLocaleDateString('he-IL')}</td><td>${a.correct} מתוך ${a.total}</td><td>${Math.round(a.duration/60)} דק׳</td></tr>`).join('')}</table></div>`:''}</div>`);
   ov.querySelector('#mClose').onclick=close;ov.querySelector('#mStart').onclick=start;
