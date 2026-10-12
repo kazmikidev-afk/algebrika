@@ -583,4 +583,83 @@ window.addEventListener('hashchange',()=>{if(location.hash==='#'+SETID)openHW()}
 .hwdiagram{max-width:100%;width:400px;height:auto;color:var(--ink)}
 @media print{body.hwprinting header,body.hwprinting main,body.hwprinting .tabs,body.hwprinting #trackingToggle,body.hwprinting .hwtop .actions{display:none!important}body.hwprinting dialog{position:static!important;max-height:none!important;overflow:visible!important}body.hwprinting .pane:not(.active){display:none!important}}
 </style>
+<script>
+/* Live study stats: Avichai's device syncs a compact snapshot (when tracking is activated); teacher mode reads it. */
+(()=>{
+  const EP=['https://avichai-stats.kazmikidev.workers.dev'];
+  const TK='avichai-tracking-v1', TC='avichai-teacher-code-v1', SEEN='avichai-plan-seen-v1';
+  const ok=c=>/^[a-f0-9]{32}$/i.test(c||'');
+  const sCode=()=>{const c=localStorage.getItem(TK)||'';return ok(c)?c:''};
+  const tCode=()=>{const c=localStorage.getItem(TC)||'';return ok(c)?c:sCode()};
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  async function call(path,body){for(const e of EP){try{const r=await fetch(e+path,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body)});if(r.ok)return await r.json()}catch(_){}}return null}
+  const A={app:'אלגבריקה',
+ allQs:()=>Object.entries(bank).flatMap(([t,qs])=>qs.map(q=>({id:q.id,topic:t,level:q.level}))),
+ snap(){const d=diagnostic(),first=Object.values(state.first),correct=first.filter(Boolean).length;const all=Object.entries(bank).flatMap(([t,qs])=>qs.map(q=>({q,t})));
+  const sc=x=>(state.first[x.q.id]===false?3:0)+(state.attempts[x.q.id]||0)*2+(state.hints[x.q.id]||0);
+  const weak=all.filter(x=>sc(x)>0).sort((a,b)=>sc(b)-sc(a)).slice(0,20).map(x=>({id:x.q.id,topic:x.t,text:String(x.q.question).slice(0,100),wrong:state.first[x.q.id]===false?1:0,tries:state.attempts[x.q.id]||0,hints:state.hints[x.q.id]||0}));
+  return{summary:{answered:first.length,correct,accuracy:first.length?Math.round(correct/first.length*100):0,hints:Object.values(state.hints).reduce((a,b)=>a+b,0)},
+   topics:d.map(x=>({id:x.id,title:x.title,total:bank[x.id].length,seen:x.seen,wrong:x.wrong,tries:x.tries,hints:x.hints,acc:x.seen?Math.round((x.seen-x.wrong)/x.seen*100):null})),
+   seen:Object.keys(state.first),weak,exams:state.exams.slice(0,5).map(e=>({date:e.date,pct:e.total?Math.round(e.score/e.total*100):0})),streak:state.daily?.streak||0}},
+ start(p){startImportedAssignment({title:p.title,questionIds:p.questionIds})}};
+  const lv={'בסיסי':0,'ביניים':1,'מתקדם':2};
+  const need=t=>t.wrong*3+t.tries*2+t.hints;
+  /* ---- device side: automatic sync ---- */
+  let last='';
+  function snap(){try{return {v:1,app:A.app,updatedAt:new Date().toISOString(),...A.snap()}}catch(e){return null}}
+  async function push(force){const c=sCode();if(!c)return;const s=snap();if(!s)return;const body=JSON.stringify({...s,updatedAt:0});if(!force&&body===last)return;last=body;
+    const r=await call('/sync',{code:c,app:A.app,snap:s});if(!r)last=''}
+  function beacon(){const c=sCode();if(!c)return;const s=snap();if(!s)return;const p=JSON.stringify({code:c,app:A.app,snap:s});try{for(const e of EP)navigator.sendBeacon(e+'/sync',new Blob([p],{type:'text/plain'}))}catch(_){}}
+  /* ---- plan building ---- */
+  function buildPlan(s,max=9){
+    const qs=A.allQs(),seen=new Set(s.seen||[]),weakMap=Object.fromEntries((s.weak||[]).map(w=>[w.id,w]));
+    let ts=[...(s.topics||[])].map(t=>({...t,need:need(t)})).sort((a,b)=>b.need-a.need||(a.acc??101)-(b.acc??101)||a.seen-b.seen);
+    let tg=ts.filter(t=>t.need>0).slice(0,3);if(!tg.length)tg=ts.filter(t=>t.seen<t.total).slice(0,2);if(!tg.length)tg=ts.slice(0,2);
+    const per=Math.max(2,Math.ceil(max/Math.max(1,tg.length))),ids=[];
+    tg.forEach(t=>{const pool=qs.filter(q=>q.topic===t.id).map(q=>({q,w:weakMap[q.id]}));
+      pool.sort((a,b)=>{const sa=a.w?(a.w.wrong*3+a.w.tries*2+a.w.hints+10):(seen.has(a.q.id)?0:5),sb=b.w?(b.w.wrong*3+b.w.tries*2+b.w.hints+10):(seen.has(b.q.id)?0:5);return sb-sa||(lv[a.q.level]??1)-(lv[b.q.level]??1)});
+      pool.slice(0,per).forEach(x=>ids.push(x.q.id))});
+    return {title:'חיזוק אישי: '+tg.map(t=>t.title).join(' · '),questionIds:ids.slice(0,max),topics:tg.map(t=>t.id)};
+  }
+  /* ---- teacher UI ---- */
+  if(!document.getElementById('ts-css')){const st=document.createElement('style');st.id='ts-css';st.textContent=`.ts{direction:rtl;font-family:inherit;line-height:1.5}.ts *{box-sizing:border-box}.ts .tc{border:1px solid rgba(127,127,127,.35);border-radius:14px;padding:14px;margin:10px 0;background:rgba(127,127,127,.08)}.ts h3{margin:0 0 8px;font-size:1.1em}.ts .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px}.ts .tile{text-align:center;border-radius:12px;padding:8px;background:rgba(127,127,127,.12)}.ts .tile b{display:block;font-size:1.4em}.ts .row{display:grid;grid-template-columns:minmax(90px,1.3fr) 2fr 44px;gap:8px;align-items:center;margin:7px 0;font-size:.92em}.ts .bar{height:10px;border-radius:6px;background:rgba(127,127,127,.25);overflow:hidden}.ts .bar i{display:block;height:100%;border-radius:6px}.ts .tag{display:inline-block;border-radius:999px;padding:1px 9px;font-size:.8em;border:1px solid rgba(127,127,127,.5)}.ts button,.ts input{font:inherit;border-radius:10px;border:1px solid rgba(127,127,127,.5);padding:9px 13px;background:transparent;color:inherit}.ts button.go{background:#1f7a5c;color:#fff;border-color:#1f7a5c;font-weight:700;cursor:pointer}.ts button{cursor:pointer}.ts small{opacity:.8}.ts .wq{border-top:1px solid rgba(127,127,127,.25);padding:7px 0;font-size:.9em}.ts .m{direction:ltr;unicode-bidi:isolate;display:inline-block}`;document.head.append(st)}
+  const ago=iso=>{const m=Math.max(0,Math.round((Date.now()-new Date(iso))/60000));return m<1?'ממש עכשיו':m<60?`לפני ${m} דק׳`:m<1440?`לפני ${Math.round(m/60)} שעות`:`לפני ${Math.round(m/1440)} ימים`};
+  async function render(box){
+    box.className='ts';
+    const c=tCode();
+    if(!c){box.innerHTML=`<div class="tc"><h3>נתוני אביחי בזמן אמת</h3><p>להצגת הנתונים העדכניים הזינו פעם אחת את קוד ההפעלה (מופיע בלשונית "הסבר" בגיליון הפרטי של מיקי). הקוד נשמר רק במכשיר הזה.</p><input id="tsCode" placeholder="קוד הפעלה" style="width:100%;direction:ltr;margin-bottom:8px"><button class="go" id="tsSave">שמירה והצגה</button></div>`;
+      box.querySelector('#tsSave').onclick=()=>{const v=box.querySelector('#tsCode').value.trim();if(!ok(v))return alert('הקוד אינו תקין (32 תווים).');localStorage.setItem(TC,v);render(box)};return}
+    box.innerHTML='<div class="tc">טוען נתונים עדכניים…</div>';
+    const r=await call('/get',{code:c,app:A.app});
+    if(!r){box.innerHTML='<div class="tc"><h3>נתוני אביחי בזמן אמת</h3><p>אין חיבור לשרת הנתונים כרגע. נסו שוב בעוד רגע.</p><button id="tsRetry">נסו שוב</button></div>';box.querySelector('#tsRetry').onclick=()=>render(box);return}
+    const s=r.snap;
+    if(!s){box.innerHTML=`<div class="tc"><h3>נתוני אביחי בזמן אמת</h3><p>עדיין לא התקבלו נתונים. הנתונים מגיעים אוטומטית ברגע שאביחי פותח את ${esc(A.app)} במכשיר שבו הופעל המעקב (כפתור "הפעלת מעקב לימוד לאביחי" בפינה, פעם אחת, עם אותו קוד).</p><button id="tsRetry">רענון</button></div>`;box.querySelector('#tsRetry').onclick=()=>render(box);return}
+    const T=[...s.topics].map(t=>({...t,need:need(t)})).sort((a,b)=>b.need-a.need||(a.acc??101)-(b.acc??101));
+    const sm=s.summary||{},plan=buildPlan(s),tn=Object.fromEntries(s.topics.map(t=>[t.id,t.title]));
+    const col=t=>!t.seen?'#9aa3a6':t.need>=6||(t.acc!=null&&t.acc<60)?'#d1495b':t.need>=2||(t.acc!=null&&t.acc<80)?'#e0a100':'#2f9e6f';
+    const advice=T.filter(t=>t.need>0).slice(0,3).map(t=>`<li><b>${esc(t.title)}</b>: ${t.wrong} טעויות${t.tries?`, ${t.tries} ניסיונות חוזרים`:''}${t.hints?`, ${t.hints} רמזים`:''}</li>`).join('');
+    box.innerHTML=`<div class="tc"><h3>נתוני אביחי · ${esc(A.app)}</h3><small>עודכן ${ago(s.receivedAt||s.updatedAt)} · מתעדכן אוטומטית מהמכשיר שלו</small>
+<div class="tiles" style="margin-top:10px"><div class="tile"><b>${sm.answered??0}</b>שאלות שנוסו</div><div class="tile"><b>${sm.accuracy??0}%</b>דיוק</div><div class="tile"><b>${sm.hints??0}</b>רמזים</div><div class="tile"><b>${(s.exams||[]).length?s.exams[0].pct+'%':'–'}</b>מבחן אחרון</div></div>
+<button id="tsRefresh" style="margin-top:10px">רענון</button></div>
+<div class="tc"><h3>נקודות חולשה ופירוט לפי נושא</h3>${T.map(t=>`<div class="row"><span>${esc(t.title)}<br><small>נוסו ${t.seen} מתוך ${t.total}</small>${t.need?`<br><small>${t.wrong} טעויות</small>`:''}</span><div class="bar"><i style="width:${t.seen?Math.max(6,t.acc??Math.round((t.seen-t.wrong)/Math.max(1,t.seen)*100)):0}%;background:${col(t)}"></i></div><b>${t.seen?(t.acc??Math.round((t.seen-t.wrong)/Math.max(1,t.seen)*100))+'%':'–'}</b></div>`).join('')}</div>
+<div class="tc"><h3>ניתוח והמלצה</h3>${advice?`<p>הנושאים שדורשים חיזוק עכשיו:</p><ul>${advice}</ul>`:'<p>אין עדיין טעויות בולטות. כדאי להמשיך בנושאים שטרם נוסו.</p>'}<p><b>${esc(plan.title)}</b><br><small>${plan.questionIds.length} שאלות: קודם שאלות שבהן אביחי טעה או נעזר ברמזים, אחר כך שאלות חדשות מאותם נושאים.</small></p>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="go" id="tsSend">שליחה למכשיר של אביחי</button><button id="tsStart">התחלה כאן במכשיר הזה</button></div><div id="tsMsg" role="status"></div></div>
+${(s.weak||[]).length?`<div class="tc"><h3>שאלות בעייתיות אחרונות</h3>${s.weak.slice(0,8).map(w=>`<div class="wq"><span class="tag">${esc(tn[w.topic]||w.topic)}</span> ${w.wrong?'טעה בניסיון ראשון':'ניסיון חוזר'}${w.hints?` · ${w.hints} רמזים`:''}<br>${esc(w.text)}</div>`).join('')}</div>`:''}`;
+    box.querySelector('#tsRefresh').onclick=()=>render(box);
+    box.querySelector('#tsStart').onclick=()=>A.start(plan);
+    box.querySelector('#tsSend').onclick=async()=>{const m=box.querySelector('#tsMsg');m.textContent='שולח…';const r2=await call('/plan',{code:c,app:A.app,plan});m.textContent=r2?.ok?'נשלח. המסלול יופיע לאביחי בפתיחה הבאה של האפליקציה (או תוך כדקה אם היא פתוחה).':'השליחה נכשלה, נסו שוב.'};
+  }
+  /* ---- device side: plan banner ---- */
+  async function checkPlan(){const c=sCode();if(!c)return;const r=await call('/getplan',{code:c,app:A.app});const p=r?.plan;if(!p||!p.questionIds?.length)return;if(localStorage.getItem(SEEN+A.app)===p.sentAt)return;
+    if(document.getElementById('tsBanner'))return;const b=document.createElement('div');b.id='tsBanner';b.className='ts';b.style.cssText='position:fixed;top:8px;right:8px;left:8px;z-index:2000;background:#1f7a5c;color:#fff;border-radius:14px;padding:12px;box-shadow:0 6px 24px rgba(0,0,0,.3);display:flex;gap:10px;align-items:center;flex-wrap:wrap';
+    b.innerHTML=`<span style="flex:1;min-width:180px"><b>המורה הכין לך מסלול חיזוק</b><br><small>${esc(p.title||'')} · ${p.questionIds.length} שאלות</small></span><button id="tsGo" style="background:#fff;color:#1f7a5c;font-weight:700">התחלה</button><button id="tsX" style="color:#fff">אחר כך</button>`;document.body.append(b);
+    b.querySelector('#tsGo').onclick=()=>{localStorage.setItem(SEEN+A.app,p.sentAt);b.remove();A.start(p)};b.querySelector('#tsX').onclick=()=>{b.remove()}}
+  window.liveStats={render,push,buildPlan,snap,personal:()=>{const s=snap();return s?buildPlan(s):null},startPlan:p=>A.start(p)};
+  window.addEventListener('load',()=>{setTimeout(()=>{push(true);checkPlan()},2500)});
+  setInterval(()=>{if(!document.hidden){push();}},30000);setInterval(()=>{if(!document.hidden)checkPlan()},90000);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)beacon()});window.addEventListener('pagehide',beacon);
+})();
+
+$('#teacherBtn').onclick=()=>{openTeacher();const d=document.createElement('div');$('#teacherBody').prepend(d);liveStats.render(d)};
+</script>
 <script src="mock-tests.js"></script></body></html>
