@@ -586,7 +586,7 @@ window.addEventListener('hashchange',()=>{if(location.hash==='#'+SETID)openHW()}
 <script>
 /* Live study stats: Avichai's device syncs a compact snapshot (when tracking is activated); teacher mode reads it. */
 (()=>{
-  const EP=['https://avichai-stats.kazmikidev.workers.dev'];
+  const EP=['https://avichai-stats-api.pages.dev','https://avichai-stats.kazmikidev.workers.dev'];
   const TK='avichai-tracking-v1', TC='avichai-teacher-code-v1', SEEN='avichai-plan-seen-v1';
   const ok=c=>/^[a-f0-9]{32}$/i.test(c||'');
   const sCode=()=>{const c=localStorage.getItem(TK)||'';return ok(c)?c:''};
