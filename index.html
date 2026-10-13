@@ -500,7 +500,7 @@ const homeRatio=renderHome;renderHome=function(f=''){homeRatio(f);if(!$('#quickR
    Wrap text nodes, not entire Hebrew paragraphs. textContent remains identical,
    so grading, progress exports and assignment imports retain their contracts. */
 (()=>{
-  const run=/[A-Za-z0-9\u00b2\u00b3\u00b9\u2070-\u209f\u200e\u03b1-\u03c9\u221a\u221e=\u2264\u2265\u2260\u00b0\u00bd(+\-\u2212][A-Za-z0-9\u00b2\u00b3\u00b9\u2070-\u209f\u200e\u03b1-\u03c9\u221a\u221e\s.,:;=+\-\u2212\u00d7\u00f7\u00b7*/^%!?<>\u2260\u2264\u2265\u2192\u2190\u21d2()\[\]{}]*/g;
+  const run=/[A-Za-z0-9\u00b2\u00b3\u00b9\u2070-\u209f\u200e\u03b1-\u03c9\u221a\u221e=\u2264\u2265\u2260\u00b0\u00bd\u2150-\u215e(+\-\u2212][A-Za-z0-9\u00b2\u00b3\u00b9\u2070-\u209f\u200e\u03b1-\u03c9\u221a\u221e\s.,:;=+\-\u2212\u00d7\u00f7\u00b7*/^%!?<>\u2260\u2264\u2265\u2192\u2190\u21d2()\[\]{}]*/g;
   function isolate(root){
     if(root.nodeType!==1&&root.nodeType!==3)return;
     if(root.nodeType===1&&root.closest('script,style,textarea,input,select,option,svg,bdi,.math,.math-inline'))return;
