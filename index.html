@@ -818,4 +818,13 @@ ${(s.weak||[]).length?`<div class="tc"><h3>שאלות בעייתיות אחרו�
 $('#teacherBtn').onclick=()=>{openTeacher();const d=document.createElement('div');$('#teacherBody').prepend(d);liveStats.render(d)};
 (()=>{const b=$('#adaptiveBtn');b.textContent='תרגול נושאים שאני מתקשה בהם';b.onclick=()=>liveStats.openWeak();const art=b.closest('article');if(art){const t=art.querySelector('b'),s=art.querySelector('small');if(t)t.textContent='▣ נקודות חולשה: דף תרגול אישי';if(s)s.textContent='המערכת מזהה את הנושאים החלשים מהטעויות והרמזים ובונה דף תרגול לפי משקל כל נושא.'}})();
 </script>
+<script>
+/* Hebrew label pairs like "ציור:מציאות" stay together so neighbouring numbers cannot flip them. */
+(()=>{const re=/[\u0590-\u05ff]+:[\u0590-\u05ff]+/g,SK='script,style,textarea,input,select,option,svg,bdi';
+function wrap(root){const ns=[];if(root.nodeType===3)ns.push(root);else if(root.nodeType===1){const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);while(w.nextNode())ns.push(w.currentNode)}
+for(const n of ns){const p=n.parentElement;if(!p||p.closest(SK))continue;const v=n.nodeValue;re.lastIndex=0;if(!re.test(v))continue;re.lastIndex=0;const f=document.createDocumentFragment();let last=0;
+for(const m of v.matchAll(re)){f.append(v.slice(last,m.index));const b=document.createElement('bdi');b.dir='rtl';b.textContent=m[0];f.append(b);last=m.index+m[0].length}
+f.append(v.slice(last));n.replaceWith(f)}}
+wrap(document.body);new MutationObserver(rs=>{for(const r of rs){if(r.type==='characterData')wrap(r.target);else for(const n of r.addedNodes)wrap(n)}}).observe(document.body,{childList:true,subtree:true,characterData:true});})();
+</script>
 <script src="mock-tests.js"></script></body></html>
