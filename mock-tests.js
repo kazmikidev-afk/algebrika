@@ -1,5 +1,5 @@
 const M=s=>'<span class="math" dir="ltr">'+s+'</span>';
-window.MOCK_CFG={id:'mock-test-1',title:'מבחן תרגול 1: יחס, פרופורציה, קנה מידה, אחוזים וחזקות',minutes:45,
+const MOCK1={id:'mock-test-1',title:'מבחן תרגול 1: יחס, פרופורציה, קנה מידה, אחוזים וחזקות',minutes:45,
 intro:'מבחן תרגול באלגבריקה, בנוי לפי מה שנלמד בשיעורים האחרונים: יחס, פרופורציה, קנה מידה ואחוזים, ובסוף חזקות.',
 getState:()=>state,save:()=>save(),viz:{},
 mount(open){const w=document.getElementById('weak');if(w){const b=document.createElement('button');b.className='btn';b.id='mockHome';b.textContent='מבחן תרגול ראשון';b.onclick=()=>{open();history.replaceState(null,'',location.pathname+location.search+'#mock-test-1')};w.after(b)}},
@@ -25,9 +25,38 @@ qs:[
 {t:'חזקות',p:'חשבו: '+M('7<sup>0</sup> + 2<sup>3</sup>'),a:['9']},
 {t:'חזקות',p:'איזה ביטוי שווה לביטוי '+M('x<sup>4</sup> · x<sup>6</sup>')+' ?',o:[M('x<sup>24</sup>'),M('x<sup>10</sup>'),M('2x<sup>10</sup>'),M('x<sup>2</sup>')],c:1}
 ]};
+
+const MOCK2={id:'mock-test-2',title:'מבחן תרגול 2: הכנה למבחן 25.10',minutes:45,
+intro:'מבחן תרגול מלא לפי טבלת המיקוד: משוואות עם חוק הפילוג, מינוס לפני סוגריים, שאלות מילוליות, יחס ופרופורציה וקנה מידה, זוויות ומקבילים, משולש ומשפט פיתגורס. זהו מבחן תרגול בלבד ולא חומר רשמי של בית הספר.',
+getState:()=>state,save:()=>save(),
+viz:{rtri:q=>vizRtri(q.v),par:q=>vizPar(q.v),trih:q=>vizTriH(q.v),angle:q=>vizAngle(q.v),xl:q=>vizX(q.v)},
+mount(open){const w=document.getElementById('examMockSlot');if(w){const b=document.createElement('button');b.className='btn';b.id='mockExam';b.textContent='🎯 מבחן תרגול מלא - 25.10';b.onclick=()=>{open();history.replaceState(null,'',location.pathname+location.search+'#mock-test-2')};w.append(b)}},
+qs:[
+{t:'חוק הפילוג',p:'פתרו את המשוואה: '+M('4(x+3)=32'),a:['5']},
+{t:'חוק הפילוג',p:'פתרו את המשוואה: '+M('3(2x-1)=4x+9'),a:['6']},
+{t:'חוק הפילוג',p:'פתרו את המשוואה: '+M('5(x+2)=3(x+8)'),a:['7']},
+{t:'מינוס לפני סוגריים',p:'פשטו: '+M('15-(4x+7)'),o:[M('-4x+8'),M('-4x+22'),M('4x-8'),M('4x+8')],c:0},
+{t:'מינוס לפני סוגריים',p:'פתרו את המשוואה: '+M('20-(3x-4)=9'),a:['5']},
+{t:'מינוס לפני סוגריים',p:'פתרו את המשוואה: '+M('6x-(2x-9)=-11'),a:['-5']},
+{t:'שאלה מילולית',p:'מספר אחד גדול ב־7 ממספר אחר. סכום שני המספרים 41. מהו המספר הקטן?',a:['17']},
+{t:'שאלה מילולית',p:'סכום שלושה מספרים עוקבים הוא 48. מהו המספר הקטן?',a:['15']},
+{t:'שאלה מילולית',p:'כרטיס למבוגר יקר ב־5 ש״ח מכרטיס לילד. משפחה קנתה 2 כרטיסי מבוגר ו־3 כרטיסי ילד ושילמה 55 ש״ח. מה מחיר כרטיס ילד בש״ח?',a:['10'],u:'ש״ח'},
+{t:'יחס',p:'כתבו את היחס 18:12 בצורתו הפשוטה ביותר. כתבו למשל 4:5.',a:['3:2']},
+{t:'יחס',p:'מחלקים 45 ש״ח בין שני ילדים ביחס 2:3. כמה ש״ח מקבל הילד עם החלק הגדול?',a:['27'],u:'ש״ח'},
+{t:'פרופורציה וקנה מידה',p:'פתרו את הפרופורציה: '+M('4/7 = x/35'),a:['20']},
+{t:'פרופורציה וקנה מידה',p:'קנה המידה במפה הוא 1:200000. המרחק במפה בין שתי עיירות 4 ס״מ. מה המרחק האמיתי בק״מ?',a:['8'],u:'ק״מ'},
+{t:'זוויות',p:'בשרטוט: מה גודל הזווית x?',a:['115'],u:'מעלות',viz:'angle',v:{t:'angle',left:'65°',right:'x',label:'זוויות צמודות'}},
+{t:'זוויות במקבילים',p:'בשרטוט שני ישרים מקבילים. זווית 1 שווה 70°. מה גודל זווית 5 (מתאימות)?',a:['70'],u:'מעלות',viz:'par',v:{t:'par',A:['1','2','3','4','5','6','7','8'],label:'ישרים מקבילים וחותך'}},
+{t:'זוויות במקבילים',p:'באותו שרטוט של מקבילים וחותך: זווית 3 שווה 110°. מה גודל זווית 5 (חד־צדדיות)?',a:['70'],u:'מעלות',viz:'par',v:{t:'par',A:['1','2','3','4','5','6','7','8'],label:'ישרים מקבילים וחותך'}},
+{t:'משולש',p:'במשולש, הבסיס 12 ס״מ והגובה לבסיס 7 ס״מ. מה שטח המשולש בסמ״ר?',a:['42'],viz:'trih',v:{t:'trih',base:'12 ס״מ',h:'7 ס״מ',label:'משולש עם גובה'}},
+{t:'משולש',p:'במשולש ABC, הקטע AD חוצה את זווית A. זווית A שווה 86°. מה גודל זווית BAD?',a:['43'],u:'מעלות',viz:'trih',v:{t:'trih',bisect:1,al:'x',ar:'x',note:'AD חוצה זווית',label:'משולש עם חוצה זווית'}},
+{t:'פיתגורס',p:'במשולש ישר־זווית הניצבים 9 ס״מ ו־12 ס״מ. מה אורך היתר בס״מ?',a:['15'],viz:'rtri',v:{t:'rtri',a:9,b:12,c:'x',label:'משולש ישר זווית'}},
+{t:'פיתגורס',p:'במשולש ישר־זווית, היתר 25 ס״מ ואחד הניצבים 7 ס״מ. מהו היקף המשולש בס״מ?',a:['56'],viz:'rtri',v:{t:'rtri',a:'x',b:7,c:25,label:'משולש ישר זווית'}}
+]};
+window.MOCK_CFGS=[MOCK1,MOCK2];
+
 /* Mock practice test engine (2026-10-10). Self-contained overlay; saves into the app's own progress object and reports through window.avichaiTrack. */
-(()=>{
-const C=window.MOCK_CFG;if(!C)return;
+(window.MOCK_CFGS||[]).forEach(C=>{if(!C)return;
 const clean=x=>String(x).normalize('NFKC').replace(/[\s\u200e\u200f]/g,'').replace(/−|–/g,'-').replace(/[％%]/g,'').replace(/[׳'"״]/g,'');
 function same(v,a){
   v=clean(v).replace(/^(\d+),(\d+)$/,'$1.$2');a=clean(a);
@@ -105,4 +134,4 @@ window['openMock_'+C.id.replace(/\W/g,'_')]=open;
 C.mount(open);
 if(location.hash==='#'+C.id)setTimeout(open,0);
 window.addEventListener('hashchange',()=>{if(location.hash==='#'+C.id)open()});
-})();
+});
