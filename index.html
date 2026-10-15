@@ -603,7 +603,7 @@ function dailyRng(seed){let a=seed>>>0||7;return()=>{a=a+0x6D2B79F5|0;let t=Math
 function buildDailySet(){
  const k=dateKey(),rng=dailyRng([...k].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7));
  const st=Object.fromEntries(diagnostic().map(d=>[d.id,d]));
- const fd=feedData(),hw=new Set(fd.homeworkTopics||[]),ft=feedTest(),tt=new Set(ft?(ft.topics||[]):[]);
+ const fd=feedData(),hw=new Set(fd.homeworkTopics||[]),ft=feedTest(),tt=new Set(ft?[...(ft.topics||[]),...(ft.suggestedTopics||[])]:[]);
  const used=new Set((state.daily.used||[]).flatMap(u=>u.ids));
  const weights=topics.map(t=>{let d=st[t.id]||{need:0};let w=1+(d.need||0);if(hw.has(t.id))w*=3;if(tt.has(t.id))w*=4;return{id:t.id,w}});
  const pickW=()=>{let tot=weights.reduce((a,x)=>a+x.w,0),r=rng()*tot;for(const x of weights){r-=x.w;if(r<=0)return x.id}return weights[0].id};
