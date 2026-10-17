@@ -307,6 +307,24 @@ let state;try{state=JSON.parse(localStorage.getItem('algebrika-v3'))||JSON.parse
 state={...fresh,...state,mistakes:state.mistakes||{},hints:state.hints||{},daily:{...fresh.daily,...(state.daily||{})},assignments:state.assignments||[],assignmentResults:state.assignmentResults||[]};
 state={...fresh,...state};
 function save(){localStorage.setItem('algebrika-v3',JSON.stringify(state));$('#saveState').textContent='נשמר עכשיו במכשיר';setTimeout(()=>$('#saveState').textContent='ההתקדמות נשמרת במכשיר הזה',900)}
+/* One-time migration 2026-10-17 (fracfix1710): ratio1/ratio17 carry fraction-form answers.
+   The fraction renderer (1.10) turned option text like "2/5" into stacked "25", so those two
+   questions were unanswerable and every click was recorded as a mistake. Void pre-fix records
+   (first!==true proves they predate the fix; first===true is only possible after it and is kept).
+   Removed entries are backed up under localStorage key algebrika-v3-backup-fracfix1710. */
+(()=>{try{
+  if(state.migrations&&state.migrations.fracfix1710)return;
+  const removed={};
+  for(const id of ['ratio1','ratio17']){
+    if(state.first&&state.first[id]===true)continue;
+    for(const k of ['first','attempts','hints','answers']){
+      if(state[k]&&id in state[k]){(removed[k]=removed[k]||{})[id]=state[k][id];delete state[k][id]}
+    }
+  }
+  try{localStorage.setItem('algebrika-v3-backup-fracfix1710',JSON.stringify({at:new Date().toISOString(),removed}))}catch(_){}
+  state.migrations={...(state.migrations||{}),fracfix1710:{at:new Date().toISOString(),reset:Object.keys(removed.first||{})}};
+  save();
+}catch(e){console.warn('fracfix1710 migration skipped',e)}})();
 let current=null,session=[],qi=0,score=0,examSession=[];
 const fmt=v=>Math.abs(v-Math.round(v))<1e-9?String(Math.round(v)):v.toFixed(1);
 const sign=v=>v<0?'−'+Math.abs(v):String(v);
