@@ -589,13 +589,30 @@ function showQuestion(){if(qi>=session.length){window.avichaiTrack?.milestone('p
  $('#hintBtn').onclick=()=>{h++;state.hints[q.id]=(state.hints[q.id]||0)+1;save();$('#hint').textContent=h===1?q.hint1:q.hint2;$('#hint').classList.add('show');if(h>=2)$('#hintBtn').disabled=true};
  $('#next').onclick=()=>{qi++;showQuestion()}}
 /* ===== Exam ===== */
-function openExam(){window.avichaiTrack?.mode('quiz');examSession=[];$('#exam').classList.add('show');$('#examBody').innerHTML=`<div class="card"><h3>הרכבת מבחן</h3><div class="setup-grid"><div><label>מספר שאלות <select id="examLen"><option>10</option><option>20</option><option>30</option></select></label><p id="available" aria-live="polite"></p><div class="actions"><button class="btn ghost" id="all">בחירת הכל</button><button class="btn ghost" id="none">ניקוי</button></div></div><div class="checks">${topics.map(t=>`<label><input type="checkbox" value="${t.id}" checked> ${t.title}</label>`).join('')}</div></div><button class="btn" id="startExam" style="margin-top:18px">התחלת מבחן</button></div>`;
+function openExam(){window.avichaiTrack?.mode('quiz');examOpts={};stopExamClock();examSession=[];$('#exam').classList.add('show');$('#examBody').innerHTML=`<div class="card"><h3>הרכבת מבחן</h3><div class="setup-grid"><div><label>מספר שאלות <select id="examLen"><option>10</option><option>20</option><option>30</option></select></label><p id="available" aria-live="polite"></p><div class="actions"><button class="btn ghost" id="all">בחירת הכל</button><button class="btn ghost" id="none">ניקוי</button></div></div><div class="checks">${topics.map(t=>`<label><input type="checkbox" value="${t.id}" checked> ${t.title}</label>`).join('')}</div></div><button class="btn" id="startExam" style="margin-top:18px">התחלת מבחן</button></div>`;
  let update=()=>{let ids=$$('.checks input:checked').map(x=>x.value),n=ids.reduce((s,id)=>s+bank[id].length,0);$('#available').textContent=`${n} שאלות זמינות במאגר`;$('#startExam').disabled=!n;[...$('#examLen').options].forEach(o=>o.disabled=+o.value>n);if(+$('#examLen').value>n)$('#examLen').value=[...$('#examLen').options].filter(o=>!o.disabled).at(-1)?.value||10};
  $$('.checks input').forEach(x=>x.onchange=update);$('#all').onclick=()=>{$$('.checks input').forEach(x=>x.checked=true);update()};$('#none').onclick=()=>{$$('.checks input').forEach(x=>x.checked=false);update()};
  $('#startExam').onclick=()=>{let pool=$$('.checks input:checked').flatMap(x=>bank[x.value]),len=Math.min(+$('#examLen').value,pool.length);examSession=pool.sort(()=>Math.random()-.5).slice(0,len);runExam(0,0,[])};update()}
-function runExam(i,s,answers){if(i>=examSession.length){window.avichaiTrack?.milestone('quiz_complete',{correct:s,total:examSession.length,wrongByTopic:answers.filter(a=>!a.ok).reduce((m,a)=>{const t=Object.keys(bank).find(id=>bank[id].some(q=>q.id===a.q.id))||'other';m[t]=(m[t]||0)+1;return m}, {})});let result={date:new Date().toISOString(),score:s,total:examSession.length};state.exams.unshift(result);save();$('#examBody').innerHTML=`<div class="card" style="text-align:center"><h3>דוח מבחן</h3><div class="equation">${Math.round(s/examSession.length*100)}%</div><p>${s} תשובות נכונות מתוך ${examSession.length}</p><div>${answers.map((a,j)=>`<div class="report-row"><span>${j+1}. ${a.q.question}</span><b style="color:${a.ok?'var(--green)':'var(--red)'}">${a.ok?'נכון':'לתיקון'}</b></div>`).join('')}</div><button class="btn" id="examDone">סיום</button></div>`;$('#examDone').onclick=()=>{$('#exam').classList.remove('show');window.avichaiTrack?.mode('other')};return}
- let q=examSession[i];$('#examBody').innerHTML=`<div class="card"><div class="quizhead"><b>שאלה ${i+1} מתוך ${examSession.length}</b><b>${s} נקודות</b></div><div class="bar"><i style="width:${i/examSession.length*100}%"></i></div><div class="question">${q.question}</div>${renderViz(q)}<div class="options">${q.options.map(o=>`<button class="answer" data-v="${esc(o)}">${o}</button>`).join('')}</div></div>`;
- $$('.answer').forEach(b=>b.onclick=()=>{let ok=b.dataset.v===q.answer;runExam(i+1,s+(ok?1:0),[...answers,{q,ok}])})}
+let examOpts={},examClockTimer=null;
+function stopExamClock(){if(examClockTimer){clearInterval(examClockTimer);examClockTimer=null}}
+function runExam(i,s,answers){if(i>=examSession.length){stopExamClock();let wasMock=!!examOpts.mock,un=answers.filter(a=>a.un).length;
+ window.avichaiTrack?.milestone(wasMock?'mock_complete':'quiz_complete',{correct:s,total:examSession.length,daysToTest:wasMock?(feedTest()||{}).days:undefined,wrongByTopic:answers.filter(a=>!a.ok).reduce((m,a)=>{const t=topicOf(a.q);m[t]=(m[t]||0)+1;return m}, {})});
+ let result={date:new Date().toISOString(),score:s,total:examSession.length};if(wasMock)result.kind='mock';state.exams.unshift(result);save();
+ if(wasMock){recordSession('mock',s,examSession.length,answers.map(a=>({tid:topicOf(a.q),ok:a.ok})),examOpts.t0?Math.round((Date.now()-examOpts.t0)/1000):0);let k=dateKey();state.daily=state.daily||{done:{},streak:0,last:null};if(!state.daily.done[k]){markDayDone(k);save()}}
+ let fb=wasMock?sessionFeedbackHTML(answers.map(a=>({tid:topicOf(a.q),ok:a.ok})),''):'';
+ $('#examBody').innerHTML=`<div class="card" style="text-align:center"><h3>${wasMock?'דוח מבחן דמה':'דוח מבחן'}</h3><div class="equation">${Math.round(s/examSession.length*100)}%</div><p>${s} תשובות נכונות מתוך ${examSession.length}${un?` · ${un} לא נענו`:''}</p>${wasMock?'<p><small>מבחן דמה לתרגול בלבד - לא מיקוד רשמי של המורה. התוצאה נשמרת ומשפיעה על התרגול הבא.</small></p>':''}<div>${answers.map((a,j)=>`<div class="report-row"><span>${j+1}. ${a.q.question}</span><b style="color:${a.ok?'var(--green)':'var(--red)'}">${a.ok?'נכון':a.un?'לא נענתה':'לתיקון'}</b></div>`).join('')}</div>${fb}<button class="btn" id="examDone">סיום</button></div>`;
+ $('#examDone').onclick=()=>{$('#exam').classList.remove('show');window.avichaiTrack?.mode('other')};examOpts={};showTodayTask();return}
+ let q=examSession[i];$('#examBody').innerHTML=`<div class="card"><div class="quizhead"><b>שאלה ${i+1} מתוך ${examSession.length}</b>${examOpts.mock?'<b id="examClock" dir="ltr"></b>':''}<b>${s} נקודות</b></div><div class="bar"><i style="width:${i/examSession.length*100}%"></i></div><div class="question">${q.question}</div>${renderViz(q)}<div class="options">${q.options.map(o=>`<button class="answer" data-v="${esc(o)}">${o}</button>`).join('')}</div></div>`;
+ if(examOpts.mock){stopExamClock();let tick=()=>{let el=$('#examClock'),left=Math.max(0,Math.round((examOpts.deadline-Date.now())/1000));if(el)el.textContent='⏱ '+String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0');if(left<=0){stopExamClock();runExam(examSession.length,s,answers.concat(examSession.slice(i).map(x=>({q:x,ok:false,un:true}))))}};tick();examClockTimer=setInterval(tick,1000)}
+ $$('.answer').forEach(b=>b.onclick=()=>{let ok=b.dataset.v===q.answer;if(examOpts.mock){if(!(q.id in state.first))state.first[q.id]=ok;if(!ok){state.attempts[q.id]=(state.attempts[q.id]||0)+1;state.mistakes[topicOf(q)]=(state.mistakes[topicOf(q)]||0)+1}else state.answers[q.id]=true;save()}runExam(i+1,s+(ok?1:0),[...answers,{q,ok}])})}
+function buildMockSet(){let ft=feedTest();if(!ft)return null;let tt=(ft.topics||[]).filter(id=>bank[id]&&bank[id].length);if(!tt.length)return null;
+ let st=Object.fromEntries(diagnostic().map(d=>[d.id,d])),used=new Set(((state.daily&&state.daily.used)||[]).flatMap(u=>u.ids));(state.mockUsed||[]).forEach(id=>used.add(id));
+ let cap=Math.ceil(20/tt.length*2),weights=tt.map(id=>({id,w:1+((st[id]&&st[id].need)||0)})),alloc={};tt.forEach(id=>alloc[id]=1);let left=20-tt.length;
+ if(left<0){tt=tt.slice(0,20);tt.forEach(id=>alloc[id]=1);left=0}
+ while(left>0&&weights.length){let best=null,bw=-1;for(const x of weights){if(alloc[x.id]>=cap)continue;let r=x.w/(alloc[x.id]+1);if(r>bw){bw=r;best=x.id}}if(best===null)break;if(alloc[best]>=bank[best].length){weights=weights.filter(x=>x.id!==best);continue}alloc[best]++;left--}
+ let out=[];for(const id of tt){let cands=bank[id].filter(q=>!used.has(q.id));if(cands.length<alloc[id])cands=bank[id].slice();cands.sort((a,b)=>((a.id in state.first)?1:0)-((b.id in state.first)?1:0)||levelRank[a.level]-levelRank[b.level]||Math.random()-.5);out=out.concat(cands.slice(0,alloc[id]))}
+ state.mockUsed=out.map(q=>q.id);save();return out}
+function startGeneratedMock(){let qs=buildMockSet();if(!qs||!qs.length){alert('לא נמצאו נושאי מבחן להרכבת מבחן דמה.');return}window.avichaiTrack?.mode('quiz');examOpts={mock:true,deadline:Date.now()+40*60000,t0:Date.now()};examSession=qs;$('#exam').classList.add('show');runExam(0,0,[])}
 
 /* ===== Adaptive path, teacher mode and daily challenge ===== */
 const levelRank={'בסיסי':0,'ביניים':1,'מתקדם':2};
@@ -613,11 +630,19 @@ function dateKey(d=new Date()){let y=d.getFullYear(),m=String(d.getMonth()+1).pa
 /* ===== תרגול יומי אדפטיבי: 10 שאלות, 8/10 לרצף ===== */
 const MASHOV_FEED='https://kazmikidev-afk.github.io/mashov-feed.json';
 let mashovFeed=null;
-fetch(MASHOV_FEED+'?t='+Date.now()).then(r=>r.ok?r.json():null).then(j=>{mashovFeed=j;showFeedBanner()}).catch(()=>{});
+fetch(MASHOV_FEED+'?t='+Date.now()).then(r=>r.ok?r.json():null).then(j=>{mashovFeed=j;showFeedBanner();showTodayTask()}).catch(()=>{});
 function feedData(){return (mashovFeed&&mashovFeed.algebrika)||{}}
 function feedTest(){let t=feedData().test;if(!t||!t.date)return null;let days=Math.ceil((new Date(t.date+'T10:00:00')-Date.now())/864e5);return days>=0&&days<=6?{...t,days}:null}
 function showFeedBanner(){let el=$('#feedBanner');if(!el){el=document.createElement('div');el.id='feedBanner';el.className='wrap';let h=$('.hero');h?h.after(el):$('main').prepend(el)}let t=feedTest();el.style.display=t?'block':'none';if(t)el.innerHTML=`<div class="card" style="border:2px solid #d1495b"><b>🎯 מבחן במתמטיקה בעוד ${t.days===0?'היום':t.days===1?'יום אחד':t.days+' ימים'}</b> (${t.date.split('-').reverse().join('.')}). התרגול היומי מתמקד עכשיו בנושאי המבחן. מומלץ לסיים במבחן אישי בקצב שעון (הכרטיס "הכנה למבחן" בעמוד הבית).</div>`}
 function dailyRng(seed){let a=seed>>>0||7;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function todayPlan(){let ft=feedTest();if(!ft||ft.days===0)return{kind:'daily',ft};return{kind:ft.days%2===1?'mock':'daily',ft}}
+function showTodayTask(){try{let el=$('#todayTask');if(!el){el=document.createElement('div');el.id='todayTask';el.className='wrap';let b=$('#feedBanner');b?b.after(el):($('.hero')?$('.hero').after(el):$('main').prepend(el))}
+ let k=dateKey(),p=todayPlan(),mockDone=(state.sessions||[]).some(x=>x.kind==='mock'&&x.d===k),dailyDone=!!(state.daily&&state.daily.done&&state.daily.done[k]),fd=p.ft?p.ft.date.split('-').reverse().join('.'):'';
+ if(p.kind==='mock'&&!mockDone)el.innerHTML=`<div class="card" style="border:2px solid var(--teal);margin-bottom:14px"><b>📋 משימת היום: מבחן דמה</b> - 20 שאלות על זמן (40 דקות) מכל נושאי המבחן ב-${fd}, עם דגש על הנושאים החלשים שלך.<div class="actions" style="margin-top:10px"><button class="btn" onclick="startGeneratedMock()">התחלת מבחן דמה</button><button class="btn ghost" onclick="openDaily()">תרגול יומי במקום</button></div></div>`;
+ else if(!dailyDone)el.innerHTML=`<div class="card" style="border:2px solid var(--teal);margin-bottom:14px"><b>📋 משימת היום: תרגול יומי</b> - 10 שאלות מותאמות אישית${p.ft?` (כולל נושאי המבחן ב-${fd})`:''}.${mockDone?' מבחן הדמה של היום כבר הושלם ✓':''}<div class="actions" style="margin-top:10px"><button class="btn" onclick="openDaily()">להתחיל</button>${p.ft&&!mockDone?'<button class="btn ghost" onclick="startGeneratedMock()">מבחן דמה (20 שאלות על זמן)</button>':''}</div></div>`;
+ else el.innerHTML=`<div class="card" style="margin-bottom:14px"><b>📋 משימת היום הושלמה ✓</b> רצף: <b>${(state.daily&&state.daily.streak)||0} ימים</b>.${p.ft&&!mockDone?`<div class="actions" style="margin-top:10px"><button class="btn ghost" onclick="startGeneratedMock()">מבחן דמה (20 שאלות על זמן)</button></div>`:''}</div>`
+ }catch(e){}}
+showTodayTask();
 function buildDailySet(){
  const k=dateKey(),rng=dailyRng([...k].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7));
  const st=Object.fromEntries(diagnostic().map(d=>[d.id,d]));
@@ -643,7 +668,7 @@ function openDaily(){let k=dateKey();$('#dailyPanel').classList.add('show');
  state.daily.set=buildDailySet();state.daily.i=0;state.daily.ok=0;
  $('#dailyBody').innerHTML=`<div class="card" style="text-align:center"><div class="daily-star">★</div><h3>תרגול יומי: 10 שאלות מותאמות לך</h3><p>60% חיזוק הנקודות החלשות והחומר הנלמד (כולל שיעורי בית ונושאי מבחן ממשוב), 40% הנושאים הבאים בתוכנית.</p><p>צריך <b>8 מתוך 10</b> נכונות מהנסיון הראשון כדי לשמור על הרצף. רצף נוכחי: <b>${state.daily.streak||0} ימים</b>. ככל שהרצף עולה, הרמה עולה.</p><button class="btn" onclick="startDailyRun()">מתחילים</button></div>`;
 }
-function startDailyRun(){let k=dateKey();state.daily.used=state.daily.used||[];if(!state.daily.used.some(u=>u.d===k)){state.daily.used.push({d:k,ids:state.daily.set.map(q=>q.id)});state.daily.used=state.daily.used.slice(-10)}save();renderDailyQ()}
+function startDailyRun(){let k=dateKey();state.daily.used=state.daily.used||[];if(!state.daily.used.some(u=>u.d===k)){state.daily.used.push({d:k,ids:state.daily.set.map(q=>q.id)});state.daily.used=state.daily.used.slice(-10)}state.daily.results=[];state.daily.t0=Date.now();save();renderDailyQ()}
 function renderDailyQ(){let q=state.daily.set[state.daily.i],n=state.daily.set.length,i=state.daily.i;
  $('#dailyBody').innerHTML=`<div class="card"><p style="text-align:center;margin-top:0"><b>שאלה ${i+1} מתוך ${n}</b> · נכונות מהנסיון הראשון: ${state.daily.ok} · צריך 8</p><div class="question">${q.question}</div>${renderViz(q)}<div class="options" id="dailyOptions">${q.options.map(o=>`<button class="answer" data-v="${esc(o)}">${o}</button>`).join('')}</div><div class="feedback" id="dailyFeedback" aria-live="polite"></div><div id="dailyNext" style="margin-top:12px;text-align:center"></div></div>`;
  let tries=0;
@@ -651,22 +676,30 @@ function renderDailyQ(){let q=state.daily.set[state.daily.i],n=state.daily.set.l
   if(b.disabled)return;
   let ok=b.dataset.v===q.answer;b.classList.add(ok?'correct':'wrong');
   state.attempts[q.id]=(state.attempts[q.id]||0)+1;
-  if(ok){state.answers[q.id]=true;if(!(q.id in state.first))state.first[q.id]=tries===0;if(tries===0)state.daily.ok++;save();
+  if(ok){state.answers[q.id]=true;if(!(q.id in state.first))state.first[q.id]=tries===0;if(tries===0)state.daily.ok++;state.daily.results.push({tid:topicOf(q),ok:tries===0});save();
    $$('#dailyOptions .answer').forEach(x=>x.disabled=true);
    $('#dailyFeedback').innerHTML=`<b>נכון!</b> ${q.explain}`;$('#dailyFeedback').classList.add('show');dailyNextBtn()}
   else{tries++;
    if(tries===1){if(!(q.id in state.first))state.first[q.id]=false;state.hints[q.id]=(state.hints[q.id]||0)+1;save();
     $('#dailyFeedback').innerHTML=`כמעט. רמז: ${q.hint1}`;$('#dailyFeedback').classList.add('show')}
-   else{state.hints[q.id]=(state.hints[q.id]||0)+1;save();
+   else{state.hints[q.id]=(state.hints[q.id]||0)+1;state.daily.results.push({tid:topicOf(q),ok:false});save();
     $$('#dailyOptions .answer').forEach(x=>x.disabled=true);
     $('#dailyOptions').children[q.options.indexOf(q.answer)]?.classList.add('correct');
     $('#dailyFeedback').innerHTML=`<b>התשובה הנכונה: ${q.answer}.</b> ${q.hint2}<br>${q.explain}`;$('#dailyFeedback').classList.add('show');dailyNextBtn()}}});
 }
 function dailyNextBtn(){let b=document.createElement('button');b.className='btn';b.textContent=state.daily.i<state.daily.set.length-1?'השאלה הבאה':'סיום התרגול';b.onclick=()=>{state.daily.i++;state.daily.i<state.daily.set.length?renderDailyQ():finishDaily()};$('#dailyNext').appendChild(b);b.focus()}
-function finishDaily(){let k=dateKey(),ok=state.daily.ok,pass=ok>=8;
- if(pass){let y=new Date();y.setDate(y.getDate()-1);state.daily.streak=state.daily.last===dateKey(y)?(state.daily.streak||0)+1:1;state.daily.last=k;state.daily.done[k]=true;save();window.avichaiTrack?.milestone('daily_challenge_complete',{streak:state.daily.streak,score:ok,total:10});
-  $('#dailyBody').innerHTML=`<div class="card" style="text-align:center"><div class="daily-star">✓</div><h3>כל הכבוד! ${ok} מתוך 10</h3><p>האתגר הושלם והרצף עומד על <b>${state.daily.streak} ימים</b>. חזרו מחר - הרמה תעלה.</p></div>`}
- else{save();$('#dailyBody').innerHTML=`<div class="card" style="text-align:center"><div class="daily-star">☆</div><h3>${ok} מתוך 10 - עוד לא</h3><p>צריך 8 נכונות מהנסיון הראשון כדי להשלים את האתגר. אפשר לנסות שוב עם סט חדש.</p><button class="btn" onclick="openDaily()">נסיון נוסף</button></div>`}
+function topicOf(q){return Object.keys(bank).find(id=>bank[id].some(z=>z.id===q.id))||'other'}
+function markDayDone(k){state.daily=state.daily||{done:{},streak:0,last:null};let y=new Date();y.setDate(y.getDate()-1);state.daily.streak=state.daily.last===dateKey(y)?(state.daily.streak||0)+1:1;state.daily.last=k;state.daily.done[k]=true}
+function recordSession(kind,score,total,results,secs){try{state.sessions=state.sessions||[];let byT={};(results||[]).forEach(r=>{let t=r.tid||topicOf(r.q);byT[t]=byT[t]||{ok:0,no:0};byT[t][r.ok?'ok':'no']++});state.sessions.unshift({d:dateKey(),at:new Date().toISOString(),kind,score,total,topics:byT,secs:secs||0});state.sessions=state.sessions.slice(0,30);save();window.liveStats?.push?.(true)}catch(e){console.warn('session record failed',e)}}
+function sessionFeedbackHTML(results,emptyNote){let byT={};(results||[]).forEach(r=>{let t=r.tid||topicOf(r.q);byT[t]=byT[t]||{ok:0,no:0};byT[t][r.ok?'ok':'no']++});let rows=Object.entries(byT).map(([t,x])=>{let tt=topics.find(z=>z.id===t);return `<div class="report-row"><span>${tt?tt.title:t}</span><b style="color:${x.no?'var(--red)':'var(--green)'}">${x.ok}/${x.ok+x.no} נכונות מהנסיון הראשון</b></div>`}).join('');let weakT=Object.entries(byT).filter(([,x])=>x.no>0).sort((a,b)=>b[1].no-a[1].no).slice(0,2).map(([t])=>{let tt=topics.find(z=>z.id===t);return tt?tt.title:t});let rec=weakT.length?`<p style="margin-top:10px">כדאי לחזק עכשיו: <b>${weakT.join(' · ')}</b></p><button class="btn ghost" onclick="document.getElementById('dailyPanel').classList.remove('show');document.getElementById('exam').classList.remove('show');liveStats.openWeak()">תרגול ממוקד בנושאים האלה</button>`:`<p style="margin-top:10px">${emptyNote||'אין נושאים לחיזוק מהסבב הזה - עבודה נקייה.'}</p>`;return `<div style="text-align:right;margin-top:12px">${rows}</div>${rec}`}
+function finishDaily(){let k=dateKey(),ok=state.daily.ok,pass=ok>=8,res=state.daily.results||[],secs=state.daily.t0?Math.round((Date.now()-state.daily.t0)/1000):0;
+ if(pass)markDayDone(k);
+ recordSession('daily',ok,state.daily.set.length,res,secs);
+ window.avichaiTrack?.milestone(pass?'daily_challenge_complete':'daily_challenge_failed',{streak:state.daily.streak||0,score:ok,total:state.daily.set.length,wrongByTopic:res.filter(r=>!r.ok).reduce((m,r)=>{m[r.tid]=(m[r.tid]||0)+1;return m},{})});
+ save();let fb=sessionFeedbackHTML(res);
+ if(pass){$('#dailyBody').innerHTML=`<div class="card" style="text-align:center"><div class="daily-star">✓</div><h3>כל הכבוד! ${ok} מתוך ${state.daily.set.length}</h3><p>האתגר הושלם והרצף עומד על <b>${state.daily.streak} ימים</b>. חזרו מחר - הרמה תעלה.</p>${fb}<div class="actions" style="justify-content:center;margin-top:10px"><button class="btn" onclick="document.getElementById('dailyPanel').classList.remove('show')">סיום</button></div></div>`}
+ else{$('#dailyBody').innerHTML=`<div class="card" style="text-align:center"><div class="daily-star">☆</div><h3>${ok} מתוך ${state.daily.set.length} - עוד לא</h3><p>צריך 8 נכונות מהנסיון הראשון כדי להשלים את האתגר.</p>${fb}<div class="actions" style="justify-content:center;margin-top:10px"><button class="btn" onclick="openDaily()">נסיון נוסף עם סט חדש</button><button class="btn ghost" onclick="document.getElementById('dailyPanel').classList.remove('show')">סיום לעכשיו</button></div></div>`}
+ showTodayTask()
 }
 
 /* ===== Wiring ===== */
@@ -972,7 +1005,7 @@ window.addEventListener('hashchange',()=>{if(location.hash==='#'+SETID)openHW()}
   const weak=all.filter(x=>sc(x)>0).sort((a,b)=>sc(b)-sc(a)).slice(0,20).map(x=>({id:x.q.id,topic:x.t,text:String(x.q.question).slice(0,100),wrong:state.first[x.q.id]===false?1:0,tries:state.attempts[x.q.id]||0,hints:state.hints[x.q.id]||0}));
   return{summary:{answered:first.length,correct,accuracy:first.length?Math.round(correct/first.length*100):0,hints:Object.values(state.hints).reduce((a,b)=>a+b,0)},
    topics:d.map(x=>({id:x.id,title:x.title,total:bank[x.id].length,seen:x.seen,wrong:x.wrong,tries:x.tries,hints:x.hints,acc:x.seen?Math.round((x.seen-x.wrong)/x.seen*100):null})),
-   seen:Object.keys(state.first),weak,exams:state.exams.slice(0,5).map(e=>({date:e.date,pct:e.total?Math.round(e.score/e.total*100):0})),streak:state.daily?.streak||0}},
+   seen:Object.keys(state.first),weak,exams:state.exams.slice(0,5).map(e=>({date:e.date,pct:e.total?Math.round(e.score/e.total*100):0,kind:e.kind||'exam'})),streak:state.daily?.streak||0,sessions:(state.sessions||[]).slice(0,7),lastDaily:(state.sessions||[]).find(x=>x.kind==='daily')||null,lastMock:(state.sessions||[]).find(x=>x.kind==='mock')||null}},
  counts(){const f=Object.values(state.first);return{ans:f.length+Object.values(state.attempts).reduce((x,y)=>x+y,0),ok:f.filter(Boolean).length}},
  start(p){startImportedAssignment({title:p.title,questionIds:p.questionIds})}};
   const lv={'בסיסי':0,'ביניים':1,'מתקדם':2};
