@@ -993,6 +993,7 @@ window.addEventListener('hashchange',()=>{if(location.hash==='#'+SETID)openHW()}
 (()=>{
   const EP=['https://avichai-stats-api.pages.dev','https://avichai-stats.kazmikidev.workers.dev'];
   const TK='avichai-tracking-v1', TC='avichai-teacher-code-v1', SEEN='avichai-plan-seen-v1';
+  try{const m=location.hash.match(/tcode=([a-f0-9]{32})/i);if(m){localStorage.setItem(TC,m[1].toLowerCase());history.replaceState(null,'',location.pathname+location.search)}}catch(_){}
   const ok=c=>/^[a-f0-9]{32}$/i.test(c||'');
   const sCode=()=>{const c=localStorage.getItem(TK)||'';return ok(c)?c:''};
   const tCode=()=>{const c=localStorage.getItem(TC)||'';return ok(c)?c:sCode()};
@@ -1052,12 +1053,13 @@ window.addEventListener('hashchange',()=>{if(location.hash==='#'+SETID)openHW()}
     const advice=T.filter(t=>t.need>0).slice(0,3).map(t=>`<li><b>${esc(t.title)}</b>: ${t.wrong} טעויות${t.tries?`, ${t.tries} ניסיונות חוזרים`:''}${t.hints?`, ${t.hints} רמזים`:''}</li>`).join('');
     box.innerHTML=`<div class="tc"><h3>נתוני אביחי · ${esc(A.app)}</h3><small>עודכן ${ago(s.receivedAt||s.updatedAt)} · מתעדכן אוטומטית מהמכשיר שלו</small>
 <div class="tiles" style="margin-top:10px"><div class="tile"><b>${sm.answered??0}</b>שאלות שנוסו</div><div class="tile"><b>${sm.accuracy??0}%</b>דיוק</div><div class="tile"><b>${sm.hints??0}</b>רמזים</div><div class="tile"><b>${(s.exams||[]).length?s.exams[0].pct+'%':'–'}</b>מבחן אחרון</div></div>
-<button id="tsRefresh" style="margin-top:10px">רענון</button></div>
+<button id="tsRefresh" style="margin-top:10px">רענון</button> <button id="tsLink" style="margin-top:10px">קישור כניסה אוטומטית</button></div>
 <div class="tc"><h3>נקודות חולשה ופירוט לפי נושא</h3>${T.map(t=>`<div class="row"><span>${esc(t.title)}<br><small>נוסו ${t.seen} מתוך ${t.total}</small>${t.need?`<br><small>${t.wrong} טעויות</small>`:''}</span><div class="bar"><i style="width:${t.seen?Math.max(6,t.acc??Math.round((t.seen-t.wrong)/Math.max(1,t.seen)*100)):0}%;background:${col(t)}"></i></div><b>${t.seen?(t.acc??Math.round((t.seen-t.wrong)/Math.max(1,t.seen)*100))+'%':'–'}</b></div>`).join('')}</div>
 <div class="tc"><h3>ניתוח והמלצה</h3>${advice?`<p>הנושאים שדורשים חיזוק עכשיו:</p><ul>${advice}</ul>`:'<p>אין עדיין טעויות בולטות. כדאי להמשיך בנושאים שטרם נוסו.</p>'}<p><b>${esc(plan.title)}</b><br><small>${plan.questionIds.length} שאלות: קודם שאלות שבהן אביחי טעה או נעזר ברמזים, אחר כך שאלות חדשות מאותם נושאים.</small></p>
 <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="go" id="tsSend">שליחה למכשיר של אביחי</button><button id="tsStart">התחלה כאן במכשיר הזה</button></div><div id="tsMsg" role="status"></div></div>
 ${(s.weak||[]).length?`<div class="tc"><h3>שאלות בעייתיות אחרונות</h3>${s.weak.slice(0,8).map(w=>`<div class="wq"><span class="tag">${esc(tn[w.topic]||w.topic)}</span> ${w.wrong?'טעה בניסיון ראשון':'ניסיון חוזר'}${w.hints?` · ${w.hints} רמזים`:''}<br>${esc(w.text)}</div>`).join('')}</div>`:''}`;
     box.querySelector('#tsRefresh').onclick=()=>render(box);
+    box.querySelector('#tsLink').onclick=()=>{const u=location.origin+location.pathname+'#tcode='+c;if(navigator.clipboard)navigator.clipboard.writeText(u).catch(()=>{});alert('הקישור לכניסה אוטומטית הועתק. שמרו אותו כסימנייה או כקיצור במסך הבית של הטלפון - פתיחה שלו מכניסה למצב מורה גם אם נתוני הגלישה נמחקו. הקישור סודי כמו הקוד: אל תשתפו אותו.')};
     box.querySelector('#tsStart').onclick=()=>A.start(plan);
     box.querySelector('#tsSend').onclick=async()=>{const m=box.querySelector('#tsMsg');m.textContent='שולח…';const r2=await call('/plan',{code:c,app:A.app,plan});m.textContent=r2?.ok?'נשלח. המסלול יופיע לאביחי בפתיחה הבאה של האפליקציה (או תוך כדקה אם היא פתוחה).':'השליחה נכשלה, נסו שוב.'};
   }
