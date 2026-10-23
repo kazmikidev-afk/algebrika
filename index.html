@@ -105,7 +105,12 @@ T.xeqminus=[
  ()=>{const x=ri(-6,9),a=ri(5,9),b=ri(2,4),e=ri(1,8),c=ri(1,8);const d=(a-b)*x+e-c;const ds=DS(x,-x,x+1,x-1,x+e);if(!ds)return null;
   return[`פתרו: ${M(`${a}x+${e}-(${b}x+${c})=${d}`)}`,`${x}`,ds,`פתחו את הסוגריים עם החלפת סימנים.`,`${a-b}x=${d-e+c}.`,`${a}x+${e}-${b}x-${c}=${d} ← ${a-b}x=${d-e+c} ← x=${x}.`,'מתקדם']},
  ()=>{const a=ri(2,4),b=ri(2,5),c=ri(1,6),d=ri(2,7),e=ri(1,9);const px=a*b-d,qx=a*c-e;const ans=E(px,qx);const ds=DS(ans,E(px,a*c+e),E(a*b+d,qx),E(px,qx+1),E(px,qx-1),E(a*b-d,a*c+ e));if(!ds)return null;
-  return[`פשטו: ${M(`${a}(${b}x+${c})-(${d}x+${e})`)}`,ans,ds,`קודם חוק הפילוג, ואז מינוס על כל הסוגריים השניים.`,`${a*b}x+${a*c}-${d}x-${e}.`,`${a}(${b}x+${c})-(${d}x+${e})=${a*b}x+${a*c}-${d}x-${e}=${ans}.`,'מתקדם']}
+  return[`פשטו: ${M(`${a}(${b}x+${c})-(${d}x+${e})`)}`,ans,ds,`קודם חוק הפילוג, ואז מינוס על כל הסוגריים השניים.`,`${a*b}x+${a*c}-${d}x-${e}.`,`${a}(${b}x+${c})-(${d}x+${e})=${a*b}x+${a*c}-${d}x-${e}=${ans}.`,'מתקדם']},
+ // === צורת משוואה מסימולציות 3-6: a(bx−c)=dx−(e−fx) ===
+ ()=>{for(let k=0;k<90;k++){const a=ri(2,5),b=ri(1,3),x=ri(2,12);const ab=a*b;const d=ri(2,ab-2),f=ri(1,3);const g=ab-d-f;if(g<1||g>3)continue;const c=ri(2,9);const e=a*c-x*g;if(e<1||e>15)continue;const ds=DS(x,x+1,x-1>0?x-1:x+3,x+2,-x,Math.round((a*c+e)/g));if(!ds)continue;const L=ab*x-a*c,R=d*x-(e-f*x);
+  return[`פתרו: ${M(`${a}(${E(b,-c)})=${d}x−(${E(-f,e)})`)}`,`${x}`,ds,`מינוס לפני סוגריים מחליף סימן לכל איבר: −(${E(-f,e)})=${E(f,-e)}.`,`פתחו: ${ab}x−${a*c}=${d+f}x−${e}.`,`${ab}x−${a*c}=${d+f}x−${e} ← ${g}x=${a*c-e} ← x=${x}. בדיקה: אגף שמאל ${a}·(${b*x-c})=${L}, אגף ימין ${d*x}−(${e-f*x})=${R}.`,'מתקדם']}},
+ ()=>{for(let k=0;k<90;k++){const fr=pick([[3,4,'¾'],[1,2,'½'],[1,4,'¼']]);const fn=fr[0],fd=fr[1],fc=fr[2];const b=pick([4,8,12]),c=pick([4,8]);if((fn*b)%fd||(fn*c)%fd)continue;const A=fn*b/fd,C=fn*c/fd;const x=ri(2,9);const d=ri(1,A+1),f=ri(1,2);const g=A-d+f;if(g<1||g>4)continue;const e=x*g-C;if(e<1||e>12)continue;const ds=DS(x,x+1,x-1>0?x-1:x+3,x+2,Math.round((e+C)/A));if(!ds)continue;const L=A*x-C,R=d*x+(e-f*x);
+  return[`פתרו: ${M(`${fc}(${E(b,-c)})=${d}x+(${E(-f,e)})`)}`,`${x}`,ds,`כופלים את ${fc} בכל איבר בסוגריים: ${fc}·${b}x=${A}x ו־${fc}·${c}=${C}.`,`${A}x−${C}=${d-f}x+${e}.`,`${A}x−${C}=${d-f}x+${e} ← ${g}x=${e+C} ← x=${x}. בדיקה: שמאל ${fc}·(${b*x-c})=${L}, ימין ${d*x}+(${e-f*x})=${R}.`,'מתקדם']}}
 ];
 T.xeqword=[
  ()=>{const x=ri(3,15),b=ri(2,10);const s=2*x+b;const ds=DS(x,x+b,x+1,x-1>0?x-1:x+2,Math.round(s/2));if(!ds)return null;
@@ -123,7 +128,16 @@ T.xeqword=[
  ()=>{const x=ri(4,12),k=pick([2,3]),m=ri(2,10);const s=(k+1)*x+2*m;const ds=DS(x,k*x,x+m,x-m>0?x-m:x+2,x+1);if(!ds)return null;
   return[`אמא מבוגרת פי ${k} מבתה. בעוד ${m} שנים סכום גילאיהן יהיה ${s}. בת כמה הבת היום?`,`${x}`,ds,`היום: בת x, אמא ${k}x. בעוד ${m} שנים: x+${m} ו־${k}x+${m}.`,`(x+${m})+(${k}x+${m})=${s}.`,`${k+1}x+${2*m}=${s} ← ${k+1}x=${s-2*m} ← x=${x}. הבת ${x} והאמא ${k*x}. בדיקה: בעוד ${m} שנים ${x+m}+${k*x+m}=${s}.`,'מתקדם']},
  ()=>{const x=ri(5,20),d=ri(3,15);const t=5*x+2*d;const ds=DS(x,x+d,x+1,x-1,Math.round(t/5));if(!ds)return null;
-  return[`מחיר כרטיס למבוגר גדול ב־${d} ש״ח ממחיר כרטיס לילד. משפחה קנתה 2 כרטיסי מבוגר ו־3 כרטיסי ילד ושילמה ${t} ש״ח. מה מחיר כרטיס ילד בש״ח?`,`${x}`,ds,`ילד x, מבוגר x+${d}. סכום: 2(x+${d})+3x.`,`2(x+${d})+3x=${t}.`,`2x+${2*d}+3x=${t} ← 5x=${t-2*d} ← x=${x}. מבוגר ${x+d}. בדיקה: 2·${x+d}+3·${x}=${t}.`,'מתקדם']}
+  return[`מחיר כרטיס למבוגר גדול ב־${d} ש״ח ממחיר כרטיס לילד. משפחה קנתה 2 כרטיסי מבוגר ו־3 כרטיסי ילד ושילמה ${t} ש״ח. מה מחיר כרטיס ילד בש״ח?`,`${x}`,ds,`ילד x, מבוגר x+${d}. סכום: 2(x+${d})+3x.`,`2(x+${d})+3x=${t}.`,`2x+${2*d}+3x=${t} ← 5x=${t-2*d} ← x=${x}. מבוגר ${x+d}. בדיקה: 2·${x+d}+3·${x}=${t}.`,'מתקדם']},
+ // === סוגי בעיות מילוליות מסימולציות 3-6 (ספרייה מתעדכנת, 23.10) ===
+ ()=>{for(let k=0;k<70;k++){const n=pick([4,5,6,7]),kk=pick([2,3]);if(n<=kk+1)continue;const m=pick([4,5,6,8,10]);const t=m*(n-1)/(n-kk);if(t!==Math.floor(t)||t<=m+1||t>36)continue;const mom=kk*t;if(mom>72)continue;const nm=pick(['נטע','דנה','מיה','הילה','תמר']);const ask=pick([0,1]);const ans=ask?mom:t;const ds=DS(ans,ask?t:mom,ans+2,ans-2>0?ans-2:ans+4,ans+m,t+m);if(!ds)continue;
+  return[`אמא של ${nm} מבוגרת ממנה פי ${kk}. לפני ${m} שנים הייתה האמא מבוגרת מ${nm} פי ${n}. ${ask?'בת כמה האמא היום?':'בת כמה '+nm+' היום?'}`,`${ans}`,ds,`נסמן ב־t את גיל ${nm} היום. גיל האמא: ${kk}t. לפני ${m} שנים היו שניהם צעירים ב־${m}.`,`${kk}t−${m}=${n}(t−${m}).`,`${kk}t−${m}=${n}(t−${m}) ← ${kk}t−${m}=${n}t−${n*m} ← ${n*m-m}=${n-kk}t ← t=${t}. ${nm} בת ${t} והאמא בת ${mom}. בדיקה: לפני ${m} שנים ${t-m} ו־${mom-m}, ו־${n}·${t-m}=${n*(t-m)}.`,'מתקדם']}},
+ ()=>{const d=pick([10,15,20,25,30]),a=ri(2,5),b=ri(2,5),t=ri(20,60);const S=a*t+b*(t+d);const ds=DS(t,t+d,t-5>0?t-5:t+8,t+5,Math.round(S/(a+b)));if(!ds)return null;const ctx=pick([['כרטיס מבוגר להופעה','כרטיס ילד','כרטיסי ילד','כרטיסי מבוגר'],['כרטיס מבוגר למוזיאון','כרטיס ילד','כרטיסי ילד','כרטיסי מבוגר'],['כרטיס מבוגר לסרט','כרטיס ילד','כרטיסי ילד','כרטיסי מבוגר']]);
+  return[`${ctx[0]} יקר ב־${d} ש"ח מ${ctx[1]}. משפחה קנתה ${a} ${ctx[2]} ו־${b} ${ctx[3]} ושילמה בסך הכול ${S} ש"ח. מה מחיר ${ctx[1]} בש"ח?`,`${t}`,ds,`נסמן ב־t את מחיר ${ctx[1]}. מחיר מבוגר: t+${d}.`,`${a}t+${b}(t+${d})=${S}.`,`${a}t+${b}(t+${d})=${S} ← ${a+b}t=${S-b*d} ← t=${t}. מבוגר: ${t+d} ש"ח. בדיקה: ${a}·${t}+${b}·${t+d}=${a*t+b*(t+d)}.`,'ביניים']},
+ ()=>{const pr=pick([[20,50],[20,100],[50,100],[10,50]]);const d1=pr[0],d2=pr[1];const N=ri(5,12),t=ri(1,N-1);const S=t*d1+(N-t)*d2,u=N-t;const ds=DS(t,u,t+1<=N-1?t+1:t-1,t-1>0?t-1:t+2,N);if(!ds)return null;const box=pick(['בקופת הכיתה','בקופת היומולדת','בקופה של היוזמה','בארנק של סבתא']);
+  return[`${box} יש ${N} שטרות בסכום כולל של ${S} ש"ח. חלקם שטרות של ${d1} ש"ח והשאר שטרות של ${d2} ש"ח. כמה שטרות של ${d1} ש"ח יש?`,`${t}`,ds,`נסמן ב־t את מספר השטרות של ${d1}. שטרות של ${d2}: ${N}−t.`,`${d1}t+${d2}(${N}−t)=${S}.`,`${d1}t+${d2}(${N}−t)=${S} ← ${d1-d2}t=${S-N*d2} ← t=${t}. שטרות של ${d2}: ${u}. בדיקה: ${d1}·${t}+${d2}·${u}=${d1*t+d2*u}.`,'ביניים']},
+ ()=>{for(let k=0;k<70;k++){const kk=pick([2,3,4]),m=ri(4,12),d=pick([2,4,6,8,10,12]);const b=(2*m+d)/(kk-1);if(b!==Math.floor(b)||b<3)continue;const top=kk*b;if(top<=m+2)continue;const ctx=pick([['בספרייה שני מדפים','ספרים','על המדף העליון','על המדף התחתון','מהעליון לתחתון','העליון','התחתון'],['לדן ולרון שתי קופסאות','קלפים','בקופסה של דן','בקופסה של רון','מהקופסה של דן לקופסה של רון','בקופסה של דן','בקופסה של רון']]);const ds=DS(b,top,b+2,b-2>0?b-2:b+3,b+m);if(!ds)continue;
+  return[`${ctx[0]}. ${ctx[2]} פי ${kk} ${ctx[1]} מאשר ${ctx[3]}. לאחר שהועברו ${m} ${ctx[1]} ${ctx[4]}, נשארו ${ctx[5]} ${d} ${ctx[1]} יותר מאשר ${ctx[6]}. כמה ${ctx[1]} היו ${ctx[3]} בהתחלה?`,`${b}`,ds,`נסמן ב־b את הכמות ${ctx[3]} בהתחלה. ${ctx[2]}: ${kk}b. אחרי ההעברה: ${kk}b−${m} ו־b+${m}.`,`${kk}b−${m}=b+${m}+${d}.`,`${kk}b−${m}=b+${m+d} ← ${kk-1}b=${2*m+d} ← b=${b}. בהתחלה ${ctx[2]}: ${top}. בדיקה: ${top-m} מול ${b+m}, הפרש ${top-m-(b+m)}.`,'מתקדם']}}
 ];
 T.xratio=[
  ()=>{const pr=ri(2,9),qr=ri(2,9);if(gcd(pr,qr)!==1||pr===qr)return null;const g=ri(2,6);const p=pr*g,q=qr*g;const ds=DS(`${pr}:${qr}`,`${qr}:${pr}`,`${pr+1}:${qr}`,`${pr}:${qr+1}`,`${p}:${q}`,`${pr*2}:${qr*2}`);if(!ds)return null;
@@ -141,7 +155,20 @@ T.xratio=[
  ()=>{const p=ri(2,5),q=ri(1,4);if(p<=q)return null;const k=pick([1,2]);const kg=(p+q)*k;const grams=k*p*1000;const ds=DS(grams,k*q*1000,kg*1000,k*p*100,grams+1000);if(!ds)return null;
   return[`לערבוב צבע תכלת מערבבים צבע כחול וצבע לבן ביחס ${M(`${p}:${q}`)} (כחול:לבן). הכינו ${kg} ק״ג תערובת. כמה גרם צבע כחול יש בתערובת?`,`${grams}`,ds,`חלקי הכחול: ${p} מתוך ${p+q}. מצאו כמה ק״ג כחול, ואז המירו לגרם.`,`${kg}÷${p+q}=${k} ק״ג לחלק. כחול: ${p}·${k}=${k*p} ק״ג.`,`כחול: ${p}/${p+q} מתוך ${kg} ק״ג = ${k*p} ק״ג = ${grams} גרם (1 ק״ג = 1000 גרם).`,'מתקדם']},
  ()=>{const pairs=[[50,24,12],[200,15,30],[100,18,18],[250,10,25],[500,8,40],[50,32,16],[200,12,24],[100,35,35]];const[N,l,m]=pick(pairs);const ds=DS(m,m*10,m/10,l,N/50);if(!ds)return null;
-  return[`דגם של מטוס באורך ${l} ס״מ בנוי בקנה מידה ${M(`1:${N}`)}. מהו אורך המטוס האמיתי במטרים?`,`${m}`,ds,`מכפילים: ${l}·${N} ס״מ. המירו למטרים.`,`${l*N} ס״מ = ? מ׳. 1 מ׳ = 100 ס״מ.`,`${l}·${N}=${l*N} ס״מ = ${m} מ׳.`,'מתקדם']}
+  return[`דגם של מטוס באורך ${l} ס״מ בנוי בקנה מידה ${M(`1:${N}`)}. מהו אורך המטוס האמיתי במטרים?`,`${m}`,ds,`מכפילים: ${l}·${N} ס״מ. המירו למטרים.`,`${l*N} ס״מ = ? מ׳. 1 מ׳ = 100 ס״מ.`,`${l}·${N}=${l*N} ס״מ = ${m} מ׳.`,'מתקדם']},
+ // === יחס ושטחים במלבן - צורות מסימולציות 3-6 ===
+ ()=>{for(let k=0;k<80;k++){const s=ri(4,9),r=pick([2,3]);const S=(r+1)*s*s;const divs=[];for(let a=s+1;a<S/s;a++){if(S%a===0&&S/a>s)divs.push(a)}if(!divs.length)continue;const a=pick(divs),h=S/a;const sq=s*s;const ds=DS(sq,sq*r,sq+s,S-sq,Math.round(S/r));if(!ds)continue;
+  return[`גינה מלבנית ABCD: AB=${a} ס"מ ושטחה ${S} סמ"ר. בפינה A מקצים חלקה ריבועית AEFG לגידול פרחים. היחס בין שטח הריבוע לשטח שאר הגינה הוא ${M('1:'+r)}. מה שטח החלקה הריבועית בסמ"ר?`,`${sq}`,ds,`היחס ${M('1:'+r)} מחלק את כל השטח ל־${r+1} חלקים שווים.`,`${S}÷${r+1}.`,`היחס ${M('1:'+r)} מחלק את ${S} ל־${r+1} חלקים: ${S}÷${r+1}=${sq} סמ"ר. בדיקה: שאר הגינה ${S-sq}=${r}·${sq}.`,'ביניים',{t:'rectsq',r:s/a,ab:a+' ס"מ',label:'מלבן עם חלקה ריבועית מושחרת בפינה'}]}},
+ ()=>{for(let k=0;k<80;k++){const s=ri(4,9),r=pick([2,3]);const S=(r+1)*s*s;const divs=[];for(let a=s+1;a<S/s;a++){if(S%a===0&&S/a>s)divs.push(a)}if(!divs.length)continue;const a=pick(divs),h=S/a;const pr=2*(a+h),ps=4*s,g=gcd(pr,ps);const ans=(pr/g)+':'+(ps/g);const ds=DS(ans,(ps/g)+':'+(pr/g),a+':'+s,(a+h)+':'+(2*s),S+':'+(s*s));if(!ds)continue;
+  return[`גינה מלבנית ABCD: AB=${a} ס"מ, שטחה ${S} סמ"ר, ובפינה A חלקה ריבועית AEFG שהיחס בין שטחה לשטח שאר הגינה ${M('1:'+r)}. מהו היחס בין היקף המלבן ABCD להיקף הריבוע AEFG?`,`${M(ans)}`,ds,`צעדים: שטח הריבוע, צלע הריבוע, AD, ואז שני היקפים.`,`שטח הריבוע ${S}÷${r+1}=${s*s}, צלעו ${s}. AD=${S}÷${a}=${h}.`,`שטח ריבוע ${s*s} ← צלע ${s}. AD=${h}. היקף מלבן 2(${a}+${h})=${pr}, היקף ריבוע 4·${s}=${ps}. היחס ${pr}:${ps} = ${ans}.`,'מתקדם',{t:'rectsq',r:s/a,ab:a+' ס"מ',label:'מלבן עם חלקה ריבועית מושחרת בפינה'}]}},
+ ()=>{for(let k=0;k<80;k++){const s=ri(4,9),r=pick([2,3]);const S=(r+1)*s*s;const divs=[];for(let a=s+1;a<S/s;a++){if(S%a===0&&S/a>s)divs.push(a)}if(!divs.length)continue;const a=pick(divs);const ans='1:'+(2*(r+1));const ds=DS(ans,'1:'+(r+1),'2:'+(r+1),'1:'+r,'1:'+(2*r+1));if(!ds)continue;
+  return[`גינה מלבנית ABCD ששטחה ${S} סמ"ר. בפינה A חלקה ריבועית AEFG שהיחס בין שטחה לשטח שאר הגינה ${M('1:'+r)}. מעבירים בריבוע את האלכסון AF. מהו היחס בין שטח המשולש AEF לשטח הגינה כולה?`,`${M(ans)}`,ds,`אלכסון בריבוע מחלק אותו לשני משולשים שווי שטח.`,`שטח הריבוע ${S}÷${r+1}=${s*s}. המשולש: מחצית ממנו.`,`שטח ריבוע ${s*s} ← משולש AEF = ${s*s}÷2 = ${s*s/2}. היחס ${s*s/2}:${S} = ${ans}.`,'מתקדם',{t:'rectsq',r:s/a,diag:1,label:'ריבוע בפינת מלבן עם אלכסון'}]}},
+ ()=>{for(let k=0;k<80;k++){const r=pick([2,3]),kk=ri(2,5),a=pick([8,10,12,14,16]);const h=(r+1)*kk,e=kk,S=a*h;const t1=a*e,t2=a*(h-e);const ds=DS(t1,t2,S,t1+a,t1*2>t2?t1*2:t1+6);if(!ds)continue;
+  return[`הקטע EF מחלק את המלבן ABCD לשני מלבנים: ABFE ו־EFCD. נתון: AB=${a} ס"מ, שטח ABCD הוא ${S} סמ"ר, והיחס בין שטח ABFE לשטח EFCD הוא ${M('1:'+r)}. מה שטח המלבן ABFE בסמ"ר?`,`${t1}`,ds,`היחס ${M('1:'+r)} מחלק את השטח ל־${r+1} חלקים שווים.`,`${S}÷${r+1}.`,`${S}÷${r+1}=${t1} סמ"ר. שטח EFCD: ${S-t1} סמ"ר, ואכן ${t2}=${r}·${t1}.`,'ביניים',{t:'rectsplit',r:1/(r+1),ab:a+' ס"מ',label:'מלבן מחולק לשני מלבנים'}]}},
+ ()=>{for(let k=0;k<80;k++){const r=pick([2,3]),kk=ri(2,5),a=pick([8,10,12,14,16]);const h=(r+1)*kk,e=kk,S=a*h;const p1=2*(a+e),p2=2*(a+h-e),g=gcd(p1,p2);const ans=(p1/g)+':'+(p2/g);const ds=DS(ans,(p2/g)+':'+(p1/g),e+':'+(h-e),'1:'+r,a+':'+h);if(!ds)continue;
+  return[`הקטע EF מחלק את המלבן ABCD לשני מלבנים: ABFE ו־EFCD. AB=${a} ס"מ, שטח ABCD הוא ${S} סמ"ר, והיחס בין שטחי המלבנים ${M('1:'+r)} (ABFE:EFCD). מהו היחס בין היקף ABFE להיקף EFCD?`,`${M(ans)}`,ds,`מצאו את שני השטחים, ומהם את AE ואת AD.`,`שטחים ${a*e} ו־${a*(h-e)}. AE=${a*e}÷${a}=${e}, AD=${S}÷${a}=${h}.`,`שטח ABFE=${a*e} ← AE=${e}; AD=${h} ← ED=${h-e}. היקפים: ABFE ‏2(${a}+${e})=${p1}, EFCD ‏2(${a}+${h-e})=${p2}. היחס ${p1}:${p2} = ${ans}.`,'מתקדם',{t:'rectsplit',r:1/(r+1),ab:a+' ס"מ',ae:e+' ס"מ',label:'מלבן מחולק לשני מלבנים'}]}},
+ ()=>{for(let k=0;k<80;k++){const r=pick([2,3]),m=ri(2,5),a=(r+1)*m,h=pick([6,8,10,12]);if((m*h)%2)continue;const S=a*h,ae=m,eb=a-m;const t2=eb*h/2;const ds=DS(t2,ae*h/2,S/2,eb*h,t2+h);if(!ds)continue;
+  return[`במלבן ABCD הנקודה E על הצלע AB, ומעבירים את הקטעים ED ו־EC. שטח המלבן ${S} סמ"ר, AB=${a} ס"מ, והיחס AE:EB הוא ${M('1:'+r)}. מה שטח המשולש EBC בסמ"ר?`,`${t2}`,ds,`קודם: BC מהשטח, ואז EB מהיחס. המשולש EBC ישר־זווית ב־B.`,`BC=${S}÷${a}=${h}. EB=${a}÷${r+1}·${r}=${eb}.`,`BC=${h}, EB=${eb}. שטח EBC = ${eb}·${h}÷2 = ${t2} סמ"ר.`,'מתקדם',{t:'rectpt',r:1/(r+1),bc:h+' ס"מ',label:'מלבן עם נקודה E על צלע וקטעים לקודקודים'}]}}
 ];
 T.xangles=[
  ()=>{const a=ri(25,155);const ans=180-a;const ds=DSD(ans,90-a>0?90-a:a-20,a,360-a,ans+10>175?ans-10:ans+10);if(!ds)return null;
@@ -158,7 +185,24 @@ T.xangles=[
   return[`על קו ישר נמצאות שלוש זוויות: ${a}°, ${b}° וזווית x. מה גודל הזווית x?`,`${ans}°`,ds,`שלוש הזוויות יחד משלימות לקו ישר.`,`${a}+${b}+x=180.`,`${a}°+${b}°+x=180° ← x=180°-${a+b}°=${ans}°.`,'ביניים',{t:'angle',left:a+'°',right:b+'°',note:'+ x = קו ישר',label:'זוויות על קו ישר'}]},
  ()=>{const rels={'מתחלפות':[['4','5'],['3','6']],'מתאימות':[['1','5'],['2','6'],['3','7'],['4','8']],'חד־צדדיות':[['3','5'],['4','6']],'קודקודיות':[['1','4'],['5','8'],['2','3'],['6','7']]};const rel=pick(Object.keys(rels));const cor=pick(rels[rel]);const wrongs=[];for(const k of Object.keys(rels)){if(k!==rel&&k!=='קודקודיות'||k!==rel&&rel==='קודקודיות'){for(const p of rels[k]){if(!(p[0]===cor[0]&&p[1]===cor[1]))wrongs.push(p)}}}
   const wd=[];for(const p of shuf(wrongs)){const s='זוויות '+p[0]+' ו־'+p[1];if(!wd.includes(s)&&wd.length<3)wd.push(s)}if(wd.length<3)return null;const A=['1','2','3','4','5','6','7','8'];
-  return[`בשרטוט שני ישרים מקבילים וחותך. איזה מהזוגות הבאים הוא זוג זוויות ${rel}?`,`זוויות ${cor[0]} ו־${cor[1]}`,wd,`${rel}: ${rel==='מתחלפות'?'זוויות פנימיות משני צדי החותך, לא צמודות':rel==='מתאימות'?'אותו מקום ביחס לישר ולחותך בשני הצמתים':rel==='חד־צדדיות'?'זוויות פנימיות באותו צד של החותך':'זוויות שנוצרות זו מול זו בצומת'}.`,`הסתכלו על מיקום הזוויות בשרטוט.`,`זוויות ${cor[0]} ו־${cor[1]} הן ${rel}.`,'מתקדם',{t:'par',A:A,label:'ישרים מקבילים וחותך, זוויות ממוספרות'}]}
+  return[`בשרטוט שני ישרים מקבילים וחותך. איזה מהזוגות הבאים הוא זוג זוויות ${rel}?`,`זוויות ${cor[0]} ו־${cor[1]}`,wd,`${rel}: ${rel==='מתחלפות'?'זוויות פנימיות משני צדי החותך, לא צמודות':rel==='מתאימות'?'אותו מקום ביחס לישר ולחותך בשני הצמתים':rel==='חד־צדדיות'?'זוויות פנימיות באותו צד של החותך':'זוויות שנוצרות זו מול זו בצומת'}.`,`הסתכלו על מיקום הזוויות בשרטוט.`,`זוויות ${cor[0]} ו־${cor[1]} הן ${rel}.`,'מתקדם',{t:'par',A:A,label:'ישרים מקבילים וחותך, זוויות ממוספרות'}]},
+ // === מקבילים וזוויות - צורות מסימולציות 3-6 ===
+ ()=>{for(let k=0;k<90;k++){const x=ri(8,25),p1=ri(2,4),p2=p1+ri(1,3);const q1=ri(5,25);const q2=(p2-p1)*x-q1;if(q2<1)continue;const v=p1*x+q1;if(v<25||v>150)continue;const ds=DS(x,x+2,x-2>0?x-2:x+4,Math.round(v/p1),2*x);if(!ds)continue;
+  return[`במשולש ABC מעבירים דרך הקודקוד A את הישר l המקביל ל־BC. זווית ABC שווה ${M(E(p1,q1)+'°')}, והזווית בין l ל־AB (משמאל ל־A) שווה ${M(p2+'x−'+q2+'°')}. מצאו את x. (נמקו באיזו תכונה משתמשים)`,`${x}`,ds,`l מקביל ל־BC ו־AB חותך: הזוויות מתחלפות ושוות.`,`${E(p1,q1)}=${p2}x−${q2}.`,`מתחלפות שוות: ${E(p1,q1)}=${p2}x−${q2} ← ${q1+q2}=${p2-p1}x ← x=${x}. זווית ABC = ${v}°.`,'מתקדם',{t:'tripar',al:p2+'x−'+q2+'°',ab:E(p1,q1)+'°',label:'ישר דרך קודקוד מקביל לבסיס המשולש'}]}},
+ ()=>{for(let k=0;k<90;k++){const x=ri(8,20),p1=ri(2,4),p2=p1+ri(1,3),q1=ri(5,20);const q2=(p2-p1)*x-q1;if(q2<1)continue;const vB=p1*x+q1;if(vB<25||vB>140)continue;const y=ri(4,15),r1=ri(2,4),r2=r1+ri(1,3),s1=ri(4,18);const s2=(r2-r1)*y-s1;if(s2<1)continue;const vC=r1*y+s1;if(vC<20||vC>150-vB-10)continue;const A=180-vB-vC;const ds=DSD(A,180-vB,180-vC,vB+vC>180?vB+vC-60:vB+vC,vB,vC);if(!ds)continue;
+  return[`במשולש ABC מעבירים דרך A את הישר l ∥ BC. הזווית בין l ל־AB היא ${M(p2+'x−'+q2+'°')} ו־∠ABC=${M(E(p1,q1)+'°')}; הזווית בין l ל־AC היא ${M(r2+'y−'+s2+'°')} ו־∠ACB=${M(lin(r1,s1,'y')+'°')}. מצאו את זווית BAC.`,`${A}°`,ds,`מתחלפות נותנות שתי משוואות: מצאו x ו־y, ואז זוויות B ו־C.`,`x=${x} ← ∠ABC=${vB}°. y=${y} ← ∠ACB=${vC}°.`,`מתחלפות: x=${x} (← ${vB}°), y=${y} (← ${vC}°). ∠BAC = 180−${vB}−${vC} = ${A}°.`,'מתקדם',{t:'tripar',al:p2+'x−'+q2+'°',ar:r2+'y−'+s2+'°',ab:E(p1,q1)+'°',ac:E(r1,s1)+'°',label:'ישר דרך קודקוד מקביל לבסיס'}]}},
+ ()=>{for(let k=0;k<90;k++){const x=ri(5,15),a=ri(2,3),b=ri(2,3);const A=a*x,B=b*x+ri(10,35);if(A+B>160)continue;const d=a+b-1;if(d<2)continue;const e=(a+b-d)*x+(B-b*x);if(e<5||e>60)continue;const ext=d*x+e;if(ext!==A+B)continue;const ds=DS(x,x+2,x-2>0?x-2:x+4,Math.round(ext/d),x+5);if(!ds)continue;
+  return[`במשולש ABC מאריכים את הצלע BC מעבר ל־C עד לנקודה D. נתון: ∠BAC=${M(a+'x°')}, ∠ABC=${M(E(b,B-b*x)+'°')}, והזווית החיצונית ∠ACD=${M(E(d,e)+'°')}. מצאו את x.`,`${x}`,ds,`זווית חיצונית במשולש שווה לסכום שתי הזוויות הפנימיות שאינן סמוכות לה.`,`${E(d,e)}=${a}x+${E(b,B-b*x)}.`,`חיצונית = סכום שתי הרחוקות: ${d}x+${e}=${a+b}x+${B-b*x} ← x=${x}. הזוויות: ${A}°, ${B}°, חיצונית ${ext}°.`,'מתקדם',{t:'triext',aa:a+'x°',ab:E(b,B-b*x)+'°',ext:E(d,e)+'°',label:'משולש עם הארכת צלע - זווית חיצונית'}]}},
+ ()=>{for(let k=0;k<90;k++){const x=ri(8,25),a1=ri(3,6),a2=a1-ri(1,2);if(a2<2)continue;const c1=ri(10,30);const c2=(a1-a2)*x-c1;if(c2<1)continue;const v=a1*x-c1;if(v<50||v>130)continue;const ds=DS(x,x+2,x-2>0?x-2:x+4,Math.round(v/a1),x+5);if(!ds)continue;
+  return[`נתון m ∥ n. חותך עובר דרך הנקודות M (על m) ו־N (על n). הזווית הפנימית מימין לחותך ב־M היא ${M(a1+'x−'+c1+'°')} והפנימית משמאל לחותך ב־N היא ${M(a2+'x+'+c2+'°')}. מצאו את x. (נמקו)`,`${x}`,ds,`שתי הזוויות מתחלפות בין מקבילים, ומתחלפות שוות.`,`${a1}x−${c1}=${a2}x+${c2}.`,`מתחלפות שוות: ${a1}x−${c1}=${a2}x+${c2} ← ${a1-a2}x=${c1+c2} ← x=${x}. כל אחת מהזוויות: ${v}°.`,'מתקדם',{t:'par2',a1:a1+'x−'+c1+'°',a2:a2+'x+'+c2+'°',label:'שני מקבילים ושני חותכים'}]}},
+ ()=>{for(let k=0;k<90;k++){const y=ri(12,30),a1=ri(3,5),a2=ri(3,6);const base=(a1+a2)*y-180;if(base<-12||base>12)continue;const c1=ri(2,14);const c2=base+c1;if(c2<1||c2>15)continue;const v1=a1*y+c1,v2=a2*y-c2;if(v1+v2!==180||v1<35||v1>145)continue;const ds=DS(y,y+2,y-2>0?y-2:y+4,Math.round(180/(a1+a2)),y+5);if(!ds)continue;
+  return[`נתון m ∥ n. חותך עובר דרך K (על m) ו־L (על n). הזווית הפנימית משמאל לחותך ב־K היא ${M(lin(a1,c1,'y')+'°')} וב־L היא ${M(a2+'y−'+c2+'°')}. מצאו את y. (נמקו)`,`${y}`,ds,`שתי הזוויות חד־צדדיות בין מקבילים - סכומן 180°.`,`${lin(a1,c1,'y')}+${a2}y−${c2}=180.`,`חד־צדדיות: ${a1}y+${c1}+${a2}y−${c2}=180 ← ${a1+a2}y=${180-c1+c2} ← y=${y}. הזוויות: ${v1}° ו־${v2}°.`,'מתקדם',{t:'par2',b1:lin(a1,c1,'y')+'°',b2:a2+'y−'+c2+'°',label:'שני מקבילים ושני חותכים'}]}},
+ 
+ // === DE מקביל לבסיס במשולש - מסימולציה 6 ===
+ ()=>{for(let k=0;k<90;k++){const x=ri(8,25),a=ri(2,4),c=a-1;if(c<1)continue;const b=ri(5,25);const d=(a-c)*x+b;if(d<8||d>70)continue;const v=a*x+b;if(v<35||v>130)continue;const ds=DS(x,x+2,x-2>0?x-2:x+4,Math.round(v/a),x+5);if(!ds)continue;
+  return[`במשולש ABC הנקודה D על הצלע AB והנקודה E על הצלע AC, ונתון DE ∥ BC. זווית ADE=${M(E(a,b)+'°')} וזווית ABC=${M(E(c,d)+'°')}. מצאו את x. (נמקו)`,`${x}`,ds,`DE מקביל ל־BC ו־AB חותך: ∠ADE ו־∠ABC מתאימות, ומתאימות שוות.`,`${E(a,b)}=${E(c,d)}.`,`מתאימות שוות: ${E(a,b)}=${E(c,d)} ← ${a-c}x=${d-b} ← x=${x}. שתי הזוויות: ${v}°.`,'מתקדם',{t:'tride',ade:E(a,b)+'°',abc:E(c,d)+'°',label:'קטע DE מקביל לבסיס BC במשולש'}]}},
+ ()=>{for(let k=0;k<90;k++){const x=ri(8,25),a=ri(2,4),c=a-1;if(c<1)continue;const b=ri(5,25);const d=(a-c)*x+b;if(d<8||d>70)continue;const vB=a*x+b;if(vB<40||vB>120)continue;const y=ri(15,35),e=ri(2,3),f=ri(2,4);const p1=ri(5,20);const k2=180-(e+f)*y-p1;if(k2<1)continue;const vE=e*y+p1;if(vE<40||vE>130)continue;const A=180-vB-vE;if(A<15)continue;const ds=DSD(A,vB,vE,180-vB,180-vE,A+10);if(!ds)continue;
+  return[`במשולש ABC: D על AB, E על AC, ו־DE ∥ BC. ∠ADE=${M(E(a,b)+'°')}, ∠ABC=${M(E(c,d)+'°')}, ∠AED=${M(lin(e,p1,'y')+'°')} ו־∠DEC=${M(f+'y+'+k2+'°')}. מצאו את זווית BAC.`,`${A}°`,ds,`מתאימות נותנות את x ואז ∠ABC; סמוכות על ישר נותנות את y ואז ∠AED; ו־∠ACB=∠AED (מתאימות).`,`x=${x} ← ∠ABC=${vB}°. ${e}y+${p1}+${f}y+${k2}=180 ← y=${y} ← ∠AED=${vE}°=∠ACB.`,`x=${x} (← ∠ABC=${vB}°), y=${y} (← ∠AED=${vE}°, ומתאימות ∠ACB=${vE}°). ∠BAC = 180−${vB}−${vE} = ${A}°.`,'מתקדם',{t:'tride',ade:E(a,b)+'°',abc:E(c,d)+'°',aed:E(e,p1)+'°',dec:f+'y+'+k2+'°',label:'קטע DE מקביל לבסיס BC במשולש'}]}}
 ];
 T.xtriangle=[
  ()=>{const ans='קטע היוצא מקודקע ומאונך לצלע שממולו';return[`מהו גובה במשולש?`,ans,['קטע המחלק זווית לשני חלקים שווים','קטע המחבר קודקע לאמצע הצלע שממולו','ישר העובר דרך שני קודקעים של המשולש'],`גובה קשור לאונך - זווית של 90°.`,`חושבים על שטח: צריך בסיס ואת הקו המאונך אליו.`,`גובה יוצא מקודקע ומאונך לצלע שממולו (או להמשכה). קטע שמחלק זווית לשניים הוא חוצה זווית.`,'בסיסי']},
@@ -176,7 +220,14 @@ T.xtriangle=[
  ()=>{const x=ri(2,9),a=ri(2,4),b=ri(3,20);const v=a*x+b;const ds=DS(x,x+1,x-1>0?x-1:x+3,Math.round(v/a),2*x);if(!ds)return null;
   return[`במשולש ABC, הקטע AD חוצה את זווית A. זווית BAD שווה ${M(E(a,b)+'°')} וזווית DAC שווה ${v}°. מצאו את x.`,`${x}`,ds,`חוצה זווית יוצר שתי זוויות שוות - בונים משוואה.`,`${E(a,b)}=${v}.`,`${E(a,b)}=${v} ← ${a}x=${v-b} ← x=${x}. בדיקה: ${a}·${x}+${b}=${a*x+b}.`,'מתקדם',{t:'trih',bisect:1,al:E(a,b)+'°',ar:v+'°',note:'AD חוצה זווית',label:'משולש עם חוצה זווית'}]},
  ()=>{const a=ri(6,14),h=pick([4,6,8,10]);if(a*h%2!==0)return null;let b=ri(5,13),c=ri(5,13);if(b===a||c===a||b===c)return null;const ans=a*h/2;const ds=DS(ans,Math.round(b*h/2*10)/10,Math.round(c*h/2*10)/10,a*h,ans+h);if(!ds)return null;
-  return[`במשולש, אורכי הצלעות ${a} ס״מ, ${b} ס״מ ו־${c} ס״מ. הגובה לצלע שאורכה ${a} ס״מ הוא ${h} ס״מ. מה שטח המשולש בסמ״ר?`,`${ans}`,ds,`משתמשים רק בבסיס שאליו מתאים הגובה הנתון.`,`בסיס ${a} וגובה ${h}: ${a}·${h}/2.`,`שטח = ${a}·${h}/2 = ${ans} סמ״ר. הצלעות ${b} ו־${c} מיותרות לחישוב.`,'מתקדם',{t:'trih',base:a+' ס״מ',h:h+' ס״מ',a:b+' ס״מ',b:c+' ס״מ',label:'משולש עם גובה לבסיס נתון'}]}
+  return[`במשולש, אורכי הצלעות ${a} ס״מ, ${b} ס״מ ו־${c} ס״מ. הגובה לצלע שאורכה ${a} ס״מ הוא ${h} ס״מ. מה שטח המשולש בסמ״ר?`,`${ans}`,ds,`משתמשים רק בבסיס שאליו מתאים הגובה הנתון.`,`בסיס ${a} וגובה ${h}: ${a}·${h}/2.`,`שטח = ${a}·${h}/2 = ${ans} סמ״ר. הצלעות ${b} ו־${c} מיותרות לחישוב.`,'מתקדם',{t:'trih',base:a+' ס״מ',h:h+' ס״מ',a:b+' ס״מ',b:c+' ס״מ',label:'משולש עם גובה לבסיס נתון'}]},
+ // === משולש שווה-שוקיים עם גובה לבסיס - מסימולציה 3 ===
+ ()=>{const[d,h,c]=pick([[12,16,20],[6,8,10],[9,12,15],[5,12,13],[8,15,17],[7,24,25],[10,24,26],[20,21,29],[12,9,15]]);const B=2*d;const ds=DS(h,c-d,c,h+2,h-2>0?h-2:h+4,Math.round(Math.sqrt(c*c+B*B)));if(!ds)return null;
+  return[`במשולש ABC שווה־השוקיים (AB=AC) מעבירים את הגובה AD לבסיס BC. נתון: BC=${B} ס"מ, AB=${c} ס"מ. מה אורך הגובה AD בס"מ?`,`${h}`,ds,`במשולש שווה־שוקיים הגובה לבסיס הוא גם תיכון, ולכן BD=BC÷2.`,`BD=${d}. במשולש ADB ישר־הזווית: AD²=AB²−BD².`,`BD=${B}÷2=${d}. AD²=${c*c}−${d*d}=${c*c-d*d} ← AD=${h} ס"מ.`,'ביניים',{t:'trih',base:B+' ס"מ',a:c+' ס"מ',h:'?',label:'משולש שווה שוקיים עם גובה לבסיס'}]},
+ ()=>{const[d,h,c]=pick([[12,16,20],[6,8,10],[9,12,15],[5,12,13],[8,15,17],[7,24,25],[10,24,26]]);const B=2*d,area=B*h/2,per=2*c+B;const ask=pick([0,1]);const ans=ask?per:area;const ds=ask?DS(per,per-2,per+2,area,2*c+h):DS(area,B*h,per,area+h,area-h>0?area-h:area+6);if(!ds)return null;
+  return[`במשולש ABC שווה־השוקיים (AB=AC) הגובה AD לבסיס BC. נתון: BC=${B} ס"מ, AB=${c} ס"מ. ${ask?'מהו היקף המשולש בס"מ?':'מה שטח המשולש בסמ"ר?'}`,`${ans}`,ds,ask?`ההיקף: AB+AC+BC. שווה־שוקיים: AC=AB.`:`הגובה AD מתקבל מפיתגורס (AD הוא גם תיכון). שטח: בסיס·גובה÷2.`,ask?`${c}+${c}+${B}.`:`BD=${d}, AD=√(${c}²−${d}²)=${h}. שטח: ${B}·${h}÷2.`,ask?`היקף = 2·${c}+${B} = ${per} ס"מ.`:`AD=${h}. שטח = ${B}·${h}÷2 = ${area} סמ"ר.`,'מתקדם',{t:'trih',base:B+' ס"מ',a:c+' ס"מ',h:'?',label:'משולש שווה שוקיים עם גובה לבסיס'}]},
+ ()=>{const[d,h,c]=pick([[12,16,20],[6,8,10],[9,12,15],[5,12,13],[8,15,17],[7,24,25]]);const B=2*d;const apex=pick([36,40,48,56,60,66,72,80]);const half=apex/2,base=(180-apex)/2;const ask=pick([0,1]);const ans=ask?base:half;const ds=DSD(ans,apex,180-apex,ask?half:base,ans+4,ans-4>0?ans-4:ans+8);if(!ds)return null;
+  return[`במשולש ABC שווה־השוקיים (AB=AC) מעבירים את הגובה AD לבסיס BC. נתון: זווית BAC = ${apex}°. ${ask?'מה גודל זווית ABC? (נמקו)':'מה גודל זווית BAD? (נמקו)'}`,`${ans}°`,ds,ask?`במשולש שווה־שוקיים זוויות הבסיס שוות, וסכום הזוויות 180°.`:`במשולש שווה־שוקיים הגובה לבסיס הוא גם חוצה זווית הראש.`,ask?`(180−${apex})÷2.`:`${apex}÷2.`,ask?`זוויות הבסיס: (180°−${apex}°)÷2 = ${base}° כל אחת.`:`זווית BAD = ${apex}°÷2 = ${half}° (AD חוצה את זווית הראש).`,'ביניים',{t:'trih',note:'AB = AC, AD ⊥ BC',label:'משולש שווה שוקיים עם גובה לבסיס'}]}
 ];
 T.xpythag=[
  ()=>{const[a,b,c]=pick([[3,4,5],[6,8,10],[5,12,13],[9,12,15],[8,15,17],[7,24,25],[12,16,20],[15,20,25],[20,21,29]]);const ds=DS(c,a+b,c+1,c-1,c+2);if(!ds)return null;
@@ -194,7 +245,22 @@ T.xpythag=[
  ()=>{const[a,b,c]=pick([[6,8,10],[3,4,5],[9,12,15],[12,16,20],[8,15,17],[15,20,25]]);const ds=DS(c,a+b,c+1,c-1,Math.round((a+b)/2)+2);if(!ds)return null;
   return[`מלבן שמידותיו ${a} ס״מ ו־${b} ס״מ. מה אורך האלכסון בס״מ?`,`${c}`,ds,`האלכסון סוגר משולש ישר־זווית עם צלעות המלבן.`,`d²=${a}²+${b}²=${a*a+b*b}.`,`d²=${a*a}+${b*b}=${a*a+b*b} ← d=${c} ס״מ.`,'מתקדם',{t:'quad',shape:'rect',sides:{t:b+' ס״מ',l:a+' ס״מ'},note:'אלכסון = ?',label:'מלבן עם אלכסון'}]},
  ()=>{const[a,b,c]=pick([[3,4,5],[6,8,10],[5,12,13],[9,12,15],[8,15,17],[7,24,25],[20,21,29]]);const s=a*b/2;const ds=DS(s,b*c/2,a*b,s+a,s+b>0?s+b:s+2);if(!ds)return null;
-  return[`במשולש ישר־זווית, היתר ${c} ס״מ ואחד הניצבים ${b} ס״מ. מה שטח המשולש בסמ״ר?`,`${s}`,ds,`קודם מוצאים את הניצב השני, ואז שטח = ניצב·ניצב/2.`,`a²=${c}²-${b}²=${c*c-b*b} ← a=${a}. שטח: ${a}·${b}/2.`,`a=${a}. שטח = ${a}·${b}/2 = ${s} סמ״ר. (טעות נפוצה: להשתמש ביתר לשטח.)`,'מתקדם',{t:'rtri',a:'x',b:b,c:c,label:'משולש ישר זווית'}]}
+  return[`במשולש ישר־זווית, היתר ${c} ס״מ ואחד הניצבים ${b} ס״מ. מה שטח המשולש בסמ״ר?`,`${s}`,ds,`קודם מוצאים את הניצב השני, ואז שטח = ניצב·ניצב/2.`,`a²=${c}²-${b}²=${c*c-b*b} ← a=${a}. שטח: ${a}·${b}/2.`,`a=${a}. שטח = ${a}·${b}/2 = ${s} סמ״ר. (טעות נפוצה: להשתמש ביתר לשטח.)`,'מתקדם',{t:'rtri',a:'x',b:b,c:c,label:'משולש ישר זווית'}]},
+ // === פיתגורס יישומי - צורות מסימולציות 3-6 ===
+ ()=>{const setups=[[12,16,20,5,13],[15,8,17,20,25],[24,7,25,10,26],[24,10,26,18,30],[20,15,25,21,29],[9,12,15,40,41]];const[h,d1,r1,d2,r2]=pick(setups);const ds=DS(h,r1-d1,d1-4>0?d1-4:h+2,r2-d2,h+3);if(!ds)return null;
+  return[`עמוד MA ניצב לקרקע בנקודה A. מראש העמוד M מותח חבל לנקודה B על הקרקע. נתון: AB=${d1} מ', MB=${r1} מ'. מה גובה העמוד MA במטרים?`,`${h}`,ds,`העמוד ניצב לקרקע, ולכן MAB משולש ישר־זווית. החבל הוא היתר.`,`MA²=${r1}²−${d1}².`,`MA²=${r1*r1}−${d1*d1}=${r1*r1-d1*d1} ← MA=${h} מ'.`,'ביניים',{t:'pole',dr:70,dl:52,h:'?',mb:r1+" מ'",ab:d1+" מ'",label:'עמוד וחבל - משולש ישר זווית'}]},
+ ()=>{const setups=[[12,16,20,5,13],[15,8,17,20,25],[24,7,25,10,26],[24,10,26,18,30],[20,15,25,21,29],[9,12,15,40,41]];const[h,d1,r1,d2,r2]=pick(setups);const ds=DS(r2,h+d2,r2+2,r2-2>0?r2-2:r2+4,d1+d2);if(!ds)return null;
+  return[`עמוד MA ניצב לקרקע בנקודה A. מראש העמוד M מותח חבל לנקודה B (AB=${d1} מ', MB=${r1} מ') וחבל נוסף לנקודה C שעל הקרקע מצדו השני של העמוד (AC=${d2} מ'). מה אורך החבל MC במטרים?`,`${r2}`,ds,`שני צעדים: מוצאים את גובה העמוד מהמשולש MAB, ואז משתמשים בו במשולש MAC.`,`MA²=${r1}²−${d1}²=${h*h}. ואז MC²=${h}²+${d2}².`,`MA=${h}. MC²=${h*h}+${d2*d2}=${h*h+d2*d2} ← MC=${r2} מ'.`,'מתקדם',{t:'pole',dr:70,dl:52,mb:r1+" מ'",ab:d1+" מ'",ac:d2+" מ'",mc:'?',label:'עמוד עם שני חבלים משני הצדדים'}]},
+ ()=>{const setups=[[12,16,20,5,13],[15,8,17,20,25],[24,7,25,10,26],[20,15,25,21,29]];const[h,d1,r1,d2,r2]=pick(setups);const BC=d1+d2,p=r1+r2+BC;const ds=DS(p,r1+r2,p-2,p+2,2*h+BC);if(!ds)return null;
+  return[`עמוד MA ניצב לקרקע בנקודה A. מראשו M מותחים שני חבלים: לנקודה B (AB=${d1} מ', MB=${r1} מ') ולנקודה C מצדו השני (AC=${d2} מ'). מהו היקף המשולש MBC במטרים?`,`${p}`,ds,`צריך את MC (פיתגורס פעמיים) ואת BC=AB+AC.`,`MA=${h}, ואז MC=√(${h}²+${d2}²)=${r2}. BC=${d1}+${d2}.`,`MA=${h}, MC=${r2}, BC=${BC}. היקף: ${r1}+${r2}+${BC}=${p} מ'.`,'מתקדם',{t:'pole',dr:70,dl:52,mb:r1+" מ'",ab:d1+" מ'",ac:d2+" מ'",mc:'?',label:'עמוד עם שני חבלים משני הצדדים'}]},
+ ()=>{const[a,b,c]=pick([[20,15,25],[12,16,20],[15,8,17],[6,8,10],[9,12,15],[12,5,13],[24,7,25],[8,6,10]]);const ds=DS(b,c-a,a+b-c+2*Math.round(c/2),b+2,b-2>0?b-2:b+3,Math.round(c/2)+5);if(!ds)return null;
+  return[`במלבן ABCD מעבירים את האלכסון AC. נתון: AB=${a} ס"מ, AC=${c} ס"מ. מה אורך הצלע BC בס"מ?`,`${b}`,ds,`במלבן כל הזוויות ישרות, ולכן ABC משולש ישר־זווית והאלכסון הוא היתר.`,`BC²=${c}²−${a}².`,`BC²=${c*c}−${a*a}=${c*c-a*a} ← BC=${b} ס"מ.`,'ביניים',{t:'rectdiag',ab:a+" ס\"מ",ac:c+" ס\"מ",bc:'?',label:'מלבן עם אלכסון'}]},
+ ()=>{const[a,b,c]=pick([[20,15,25],[12,16,20],[6,8,10],[9,12,15],[12,5,13],[8,6,10]]);const eb=a/2;const t=eb*b/2;const g=gcd(t,a*b);const ans=(t/g)+':'+(a*b/g);const ds=DS(ans,'1:2','1:3','1:6','1:8');if(!ds)return null;
+  return[`במלבן ABCD מעבירים את האלכסון AC. AB=${a} ס"מ, AC=${c} ס"מ. הנקודה E היא אמצע הצלע AB. מהו היחס בין שטח המשולש EBC לשטח המלבן ABCD?`,`${M(ans)}`,ds,`קודם BC בפיתגורס. משולש EBC ישר־זווית עם שוקיים EB=${eb} ו־BC.`,`BC=${b}. שטח EBC=${eb}·${b}÷2. שטח המלבן: ${a}·${b}.`,`BC=${b}. EBC: ${eb}·${b}÷2=${t}. מלבן: ${a*b}. היחס ${t}:${a*b} = ${ans}.`,'מתקדם',{t:'rectdiag',ab:a+" ס\"מ",ac:c+" ס\"מ",label:'מלבן עם אלכסון ונקודת אמצע'}]},
+ ()=>{const[h,df,lg]=pick([[12,5,13],[4,3,5],[8,15,17],[6,8,10],[3,4,5],[9,12,15],[12,16,20],[24,7,25],[20,15,25]]);const b=ri(4,12);const B=b+df;const area=(B+b)*h/2;const ds=DS(area,(B+b)*h,B*h+lg,(B+b+lg)*2,area+h);if(!ds)return null;
+  return[`ABCD טרפז ישר־זווית: AB ∥ CD ו־AD ⊥ AB. נתון: AB=${B} ס"מ, CD=${b} ס"מ, AD=${h} ס"מ. מה שטח הטרפז בסמ"ר?`,`${area}`,ds,`שטח טרפז = (סכום הבסיסים · הגובה) ÷ 2. הגובה הוא AD.`,`(${B}+${b})·${h} ÷ 2.`,`שטח = (${B}+${b})·${h}÷2 = ${B+b}·${h}÷2 = ${area} סמ"ר.`,'ביניים',{t:'trapz',ab:B+' ס"מ',cd:b+' ס"מ',ad:h+' ס"מ',label:'טרפז ישר זווית'}]},
+ ()=>{const[h,df,lg]=pick([[12,5,13],[4,3,5],[8,15,17],[6,8,10],[9,12,15],[12,16,20],[20,15,25]]);const b=ri(4,12);const B=b+df;const p=B+b+h+lg;const ds=DS(p,p-2,p+2,B+b+h*2,B+lg+h+df);if(!ds)return null;
+  return[`ABCD טרפז ישר־זווית: AB ∥ CD ו־AD ⊥ AB. AB=${B} ס"מ, CD=${b} ס"מ, AD=${h} ס"מ. מעבירים מ־C גובה CE לצלע AB. מהו היקף הטרפז בס"מ?`,`${p}`,ds,`AECD מלבן, לכן EB=AB−CD. השוק BC נמצאת בפיתגורס במשולש CEB.`,`EB=${B}−${b}=${df}, CE=${h}. BC²=${h}²+${df}².`,`EB=${df}, BC²=${h*h}+${df*df}=${h*h+df*df} ← BC=${lg}. היקף: ${B}+${b}+${h}+${lg}=${p} ס"מ.`,'מתקדם',{t:'trapz',height:1,ab:B+' ס"מ',cd:b+' ס"מ',ad:h+' ס"מ',bc:'?',label:'טרפז ישר זווית עם גובה עזר'}]}
 ];
 T.expressions=[
  ()=>{const a=ri(2,9),b=ri(2,9),c=ri(1,a+b-1),v=pick(['x','a','y','m']);const r=a+b-c;return[`פשטו: ${a}${v}+${b}${v}-${c}${v}`,`${r}${v}`,[`${a+b+c}${v}`,`${r}${v}²`,`${a+b-c}`,`${a-b+c}${v}`],`כנסו את המקדמים בלבד: ${a}+${b}-${c}.`,'המשתנה נשאר ללא שינוי.',`${a}+${b}-${c}=${r}, לכן ${r}${v}.`,'בסיסי']},
@@ -332,11 +398,153 @@ function topicScore(id){let qs=bank[id],n=qs.filter(q=>state.answers[q.id]).leng
 
 /* ===== Question visuals ===== */
 function vizSvg(w,h,label,inner){return `<figure class="qviz" role="img" aria-label="${esc(label)}"><svg viewBox="0 0 ${w} ${h}" aria-hidden="true" focusable="false">${inner}</svg></figure>`}
+
+function vizRectSq(v){ // מלבן עם ריבוע מושחר בפינה שמאל-על
+ let X=60,Y=26,W=220,H=120,r=v.r||0.45,S=W*r;
+ let s=`<rect x="${X}" y="${Y}" width="${W}" height="${H}" style="fill:var(--teal2);stroke:var(--teal)" stroke-width="1.8" fill-opacity=".35"/>`;
+ s+=`<rect x="${X}" y="${Y}" width="${S}" height="${S}" style="fill:var(--teal);stroke:var(--teal)" stroke-width="1.6" fill-opacity=".55"/>`;
+ const lb=(x,y,t)=>`<text x="${x}" y="${y}" class="vt">${t}</text>`;
+ s+=lb(X-14,Y+2,'A')+lb(X+W+6,Y+2,'B')+lb(X+W+6,Y+H+6,'C')+lb(X-14,Y+H+6,'D');
+ s+=lb(X+S+6,Y+14,'F')+lb(X-14,Y+S+6,'G')+lb(X+S+6,Y+S+16,'E');
+ if(v.diag)s+=`<line x1="${X}" y1="${Y}" x2="${X+S}" y2="${Y+S}" style="stroke:currentColor" stroke-width="1.4" stroke-dasharray="4 3"/>`;
+ if(v.ab)s+=`<text x="${X+W/2}" y="${Y-8}" class="vt">${v.ab}</text>`;
+ if(v.ad)s+=`<text x="${X-24}" y="${Y+H/2}" class="vt">${v.ad}</text>`;
+ if(v.sq)s+=`<text x="${X+S/2}" y="${Y+S/2+4}" class="vts">${v.sq}</text>`;
+ if(v.note)s+=`<text x="160" y="182" class="vts">${v.note}</text>`;
+ return vizSvg(320,v.note?196:170,v.label,s)}
+function vizRectSplit(v){ // מלבן מחולק לשני מלבנים בקו אופקי
+ let X=60,Y=26,W=220,H=120,r=v.r||0.34,Ey=Y+H*r;
+ let s=`<rect x="${X}" y="${Y}" width="${W}" height="${H}" style="fill:var(--teal2);stroke:var(--teal)" stroke-width="1.8" fill-opacity=".35"/>`;
+ s+=`<line x1="${X}" y1="${Ey}" x2="${X+W}" y2="${Ey}" style="stroke:var(--teal)" stroke-width="1.8"/>`;
+ const lb=(x,y,t)=>`<text x="${x}" y="${y}" class="vt">${t}</text>`;
+ s+=lb(X-14,Y+2,'A')+lb(X+W+6,Y+2,'B')+lb(X+W+6,Y+H+6,'C')+lb(X-14,Y+H+6,'D');
+ s+=lb(X-14,Ey+4,'E')+lb(X+W+6,Ey+4,'F');
+ if(v.diag)s+=`<line x1="${X}" y1="${Ey}" x2="${X+W}" y2="${Y+H}" style="stroke:currentColor" stroke-width="1.4" stroke-dasharray="4 3"/>`;
+ if(v.ab)s+=`<text x="${X+W/2}" y="${Y-8}" class="vt">${v.ab}</text>`;
+ if(v.ae)s+=`<text x="${X-24}" y="${(Y+Ey)/2+4}" class="vt">${v.ae}</text>`;
+ if(v.ed)s+=`<text x="${X-24}" y="${(Ey+Y+H)/2+4}" class="vt">${v.ed}</text>`;
+ if(v.note)s+=`<text x="160" y="182" class="vts">${v.note}</text>`;
+ return vizSvg(320,v.note?196:170,v.label,s)}
+function vizRectPt(v){ // מלבן עם נקודה E על AB וקטעים ל-D ול-C
+ let X=60,Y=26,W=220,H=120,r=v.r||0.34,Ex=X+W*r;
+ let s=`<rect x="${X}" y="${Y}" width="${W}" height="${H}" style="fill:var(--teal2);stroke:var(--teal)" stroke-width="1.8" fill-opacity=".35"/>`;
+ s+=`<line x1="${Ex}" y1="${Y}" x2="${X}" y2="${Y+H}" style="stroke:var(--teal)" stroke-width="1.6"/>`;
+ s+=`<line x1="${Ex}" y1="${Y}" x2="${X+W}" y2="${Y+H}" style="stroke:var(--teal)" stroke-width="1.6"/>`;
+ const lb=(x,y,t)=>`<text x="${x}" y="${y}" class="vt">${t}</text>`;
+ s+=lb(X-14,Y+2,'A')+lb(X+W+6,Y+2,'B')+lb(X+W+6,Y+H+6,'C')+lb(X-14,Y+H+6,'D');
+ s+=lb(Ex-3,Y-8,'E');
+ if(v.ae)s+=`<text x="${(X+Ex)/2-8}" y="${Y+16}" class="vts">${v.ae}</text>`;
+ if(v.eb)s+=`<text x="${(Ex+X+W)/2}" y="${Y+16}" class="vts">${v.eb}</text>`;
+ if(v.bc)s+=`<text x="${X+W+8}" y="${Y+H/2}" class="vt">${v.bc}</text>`;
+ if(v.note)s+=`<text x="160" y="182" class="vts">${v.note}</text>`;
+ return vizSvg(320,v.note?196:170,v.label,s)}
+function vizRectDiag(v){ // מלבן עם אלכסון מ-A ל-C
+ let X=60,Y=26,W=220,H=120;
+ let s=`<rect x="${X}" y="${Y}" width="${W}" height="${H}" style="fill:var(--teal2);stroke:var(--teal)" stroke-width="1.8" fill-opacity=".35"/>`;
+ s+=`<line x1="${X}" y1="${Y}" x2="${X+W}" y2="${Y+H}" style="stroke:currentColor" stroke-width="1.6"/>`;
+ const lb=(x,y,t)=>`<text x="${x}" y="${y}" class="vt">${t}</text>`;
+ s+=lb(X-14,Y+2,'A')+lb(X+W+6,Y+2,'B')+lb(X+W+6,Y+H+6,'C')+lb(X-14,Y+H+6,'D');
+ if(v.ab)s+=`<text x="${X+W/2}" y="${Y-8}" class="vt">${v.ab}</text>`;
+ if(v.bc)s+=`<text x="${X+W+8}" y="${Y+H/2+4}" class="vt">${v.bc}</text>`;
+ if(v.ac)s+=`<text x="${X+W/2-10}" y="${Y+H/2+18}" class="vt">${v.ac}</text>`;
+ if(v.note)s+=`<text x="160" y="182" class="vts">${v.note}</text>`;
+ return vizSvg(320,v.note?196:170,v.label,s)}
+function vizPole(v){ // עמוד ניצב לקרקע עם שני חבלים לשני הצדדים
+ let G=150,Ax=150,topY=34,Cx=Ax-(v.dl||70),Bx=Ax+(v.dr||80);
+ let s=`<line x1="30" y1="${G}" x2="290" y2="${G}" style="stroke:currentColor" stroke-width="2"/>`;
+ s+=`<line x1="${Ax}" y1="${G}" x2="${Ax}" y2="${topY}" style="stroke:var(--teal)" stroke-width="2.6"/>`;
+ s+=`<line x1="${Ax}" y1="${topY}" x2="${Bx}" y2="${G}" style="stroke:var(--teal)" stroke-width="1.8"/>`;
+ s+=`<line x1="${Ax}" y1="${topY}" x2="${Cx}" y2="${G}" style="stroke:var(--teal)" stroke-width="1.8"/>`;
+ s+=`<path d="M${Ax} ${G-12} L${Ax+12} ${G-12} L${Ax+12} ${G}" fill="none" style="stroke:currentColor" stroke-width="1.3"/>`;
+ const lb=(x,y,t)=>`<text x="${x}" y="${y}" class="vt">${t}</text>`;
+ s+=lb(Ax-4,topY-8,'M')+lb(Ax+8,G+16,'A')+lb(Bx-4,G+16,'B')+lb(Cx-4,G+16,'C');
+ if(v.h)s+=lb(Ax+8,(G+topY)/2,v.h);
+ if(v.mb)s+=lb((Ax+Bx)/2-6,(topY+G)/2-10,v.mb);
+ if(v.mc)s+=lb((Ax+Cx)/2-16,(topY+G)/2-10,v.mc);
+ if(v.ab)s+=`<text x="${(Ax+Bx)/2}" y="${G+16}" class="vts">${v.ab}</text>`;
+ if(v.ac)s+=`<text x="${(Ax+Cx)/2-14}" y="${G+16}" class="vts">${v.ac}</text>`;
+ if(v.note)s+=`<text x="160" y="${G+34}" class="vts">${v.note}</text>`;
+ return vizSvg(320,v.note?G+46:G+28,v.label,s)}
+function vizTriPar(v){ // משולש עם ישר l דרך A מקביל ל-BC
+ let Ax=150,Ay=30,Bx=60,By=140,Cx=250,Cy=140;
+ let s=`<polygon points="${Ax},${Ay} ${Bx},${By} ${Cx},${Cy}" style="fill:var(--teal2);stroke:var(--teal)" stroke-width="1.8" fill-opacity=".4"/>`;
+ s+=`<line x1="30" y1="${Ay}" x2="290" y2="${Ay}" style="stroke:currentColor" stroke-width="1.8"/>`;
+ s+=`<path d="M266 ${Ay-5} L273 ${Ay} L266 ${Ay+5}" fill="none" style="stroke:currentColor" stroke-width="1.4"/>`;
+ s+=`<path d="M222 ${By-5} L229 ${By} L222 ${By+5}" fill="none" style="stroke:currentColor" stroke-width="1.4"/>`;
+ const lb=(x,y,t)=>`<text x="${x}" y="${y}" class="vt">${t}</text>`;
+ s+=lb(282,Ay-8,'l')+lb(Ax-3,Ay+34,'A')+lb(Bx-12,By+8,'B')+lb(Cx+6,Cy+8,'C');
+ if(v.al)s+=`<text x="${Ax-56}" y="${Ay+18}" class="vts">${v.al}</text>`;
+ if(v.ar)s+=`<text x="${Ax+34}" y="${Ay+18}" class="vts">${v.ar}</text>`;
+ if(v.ab)s+=`<text x="${Bx+2}" y="${By-24}" class="vts">${v.ab}</text>`;
+ if(v.ac)s+=`<text x="${Cx-40}" y="${Cy-24}" class="vts">${v.ac}</text>`;
+ if(v.note)s+=`<text x="160" y="164" class="vts">${v.note}</text>`;
+ return vizSvg(320,v.note?178:162,v.label,s)}
+function vizTriExt(v){ // משולש עם הארכת BC ל-D (זווית חיצונית)
+ let Ax=110,Ay=30,Bx=50,By=140,Cx=210,Cy=140,Dx=280,Dy=140;
+ let s=`<polygon points="${Ax},${Ay} ${Bx},${By} ${Cx},${Cy}" style="fill:var(--teal2);stroke:var(--teal)" stroke-width="1.8" fill-opacity=".4"/>`;
+ s+=`<line x1="${Cx}" y1="${Cy}" x2="${Dx}" y2="${Dy}" style="stroke:currentColor" stroke-width="1.8"/>`;
+ const lb=(x,y,t)=>`<text x="${x}" y="${y}" class="vt">${t}</text>`;
+ s+=lb(Ax-3,Ay-8,'A')+lb(Bx-14,By+8,'B')+lb(Cx-3,Cy+18,'C')+lb(Dx+4,Dy+8,'D');
+ if(v.aa)s+=`<text x="${Ax+8}" y="${Ay+22}" class="vts">${v.aa}</text>`;
+ if(v.ab)s+=`<text x="${Bx+2}" y="${By-22}" class="vts">${v.ab}</text>`;
+ if(v.ext)s+=`<text x="${Cx+4}" y="${Cy-26}" class="vts">${v.ext}</text>`;
+ if(v.par)s+=`<line x1="${Bx-26}" y1="${By-58}" x2="${Bx+58}" y2="${By+8}" style="stroke:currentColor" stroke-width="1.4" stroke-dasharray="5 4"/>`;
+ if(v.note)s+=`<text x="160" y="172" class="vts">${v.note}</text>`;
+ return vizSvg(320,v.note?186:168,v.label,s)}
+function vizPar2(v){ // שני מקבילים ושני חותכים
+ let s=`<line x1="25" y1="50" x2="295" y2="50" style="stroke:currentColor" stroke-width="2.2"/>`;
+ s+=`<line x1="25" y1="120" x2="295" y2="120" style="stroke:currentColor" stroke-width="2.2"/>`;
+ s+=`<path d="M255 45 L262 50 L255 55" fill="none" style="stroke:currentColor" stroke-width="1.5"/>`;
+ s+=`<path d="M255 115 L262 120 L255 125" fill="none" style="stroke:currentColor" stroke-width="1.5"/>`;
+ s+=`<line x1="90" y1="18" x2="170" y2="152" style="stroke:var(--teal)" stroke-width="2"/>`;
+ s+=`<line x1="240" y1="18" x2="160" y2="152" style="stroke:var(--teal)" stroke-width="2"/>`;
+ const lb=(x,y,t)=>`<text x="${x}" y="${y}" class="vt">${t}</text>`;
+ s+=lb(20,42,'m')+lb(20,138,'n');
+ // נקודות חיתוך: חותך1 בערך (103,50)/(157,120); חותך2 בערך (227,50)/(173,120)
+ if(v.a1)s+=`<text x="106" y="70" class="vts">${v.a1}</text>`;
+ if(v.a2)s+=`<text x="128" y="106" class="vts">${v.a2}</text>`;
+ if(v.b1)s+=`<text x="196" y="70" class="vts">${v.b1}</text>`;
+ if(v.b2)s+=`<text x="176" y="106" class="vts">${v.b2}</text>`;
+ if(v.note)s+=`<text x="160" y="146" class="vts">${v.note}</text>`;
+ return vizSvg(320,160,v.label,s)}
+function vizTrapz(v){ // טרפז ישר-זווית: A שמאל-מטה, B ימין-מטה, C ימין-על, D שמאל-על
+ let Ax=50,Ay=140,Bx=250,By=140,Cx=190,Cy=36,Dx=50,Dy=36,Ex=190,Ey=140;
+ let s=`<polygon points="${Ax},${Ay} ${Bx},${By} ${Cx},${Cy} ${Dx},${Dy}" style="fill:var(--teal2);stroke:var(--teal)" stroke-width="1.8" fill-opacity=".4"/>`;
+ s+=`<path d="M${Ax} ${Ay-12} L${Ax+12} ${Ay-12} L${Ax+12} ${Ay}" fill="none" style="stroke:currentColor" stroke-width="1.3"/>`;
+ s+=`<path d="M${Dx} ${Dy+12} L${Dx+12} ${Dy+12} L${Dx+12} ${Dy}" fill="none" style="stroke:currentColor" stroke-width="1.3"/>`;
+ if(v.height){s+=`<line x1="${Ex}" y1="${Cy}" x2="${Ex}" y2="${Ey}" style="stroke:currentColor" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+  s+=`<path d="M${Ex} ${Ey-12} L${Ex+12} ${Ey-12} L${Ex+12} ${Ey}" fill="none" style="stroke:currentColor" stroke-width="1.3"/>`;
+  s+=`<text x="${Ex+4}" y="${Ey+18}" class="vt">E</text>`}
+ const lb=(x,y,t)=>`<text x="${x}" y="${y}" class="vt">${t}</text>`;
+ s+=lb(Ax-14,Ay+6,'A')+lb(Bx+6,By+6,'B')+lb(Cx+6,Cy,'C')+lb(Dx-14,Dy,'D');
+ if(v.ab)s+=`<text x="${(Ax+Bx)/2}" y="${Ay+20}" class="vt">${v.ab}</text>`;
+ if(v.cd)s+=`<text x="${(Dx+Cx)/2}" y="${Dy-8}" class="vt">${v.cd}</text>`;
+ if(v.ad)s+=`<text x="${Ax-30}" y="${(Ay+Dy)/2}" class="vt">${v.ad}</text>`;
+ if(v.bc)s+=`<text x="${(Bx+Cx)/2+8}" y="${(By+Cy)/2}" class="vt">${v.bc}</text>`;
+ if(v.note)s+=`<text x="160" y="176" class="vts">${v.note}</text>`;
+ return vizSvg(320,v.note?190:172,v.label,s)}
+function vizTriDE(v){ // משולש עם DE מקביל לבסיס BC
+ let Ax=150,Ay=28,Bx=55,By=142,Cx=255,Cy=142,r=v.r||0.45;
+ let Dx=Ax+(Bx-Ax)*r,Dy=Ay+(By-Ay)*r,Ex=Ax+(Cx-Ax)*r,Ey=Ay+(Cy-Ay)*r;
+ let s=`<polygon points="${Ax},${Ay} ${Bx},${By} ${Cx},${Cy}" style="fill:var(--teal2);stroke:var(--teal)" stroke-width="1.8" fill-opacity=".4"/>`;
+ s+=`<line x1="${Dx}" y1="${Dy}" x2="${Ex}" y2="${Ey}" style="stroke:currentColor" stroke-width="1.8"/>`;
+ s+=`<path d="M${Dx+4} ${Dy-9} L${Dx+11} ${Dy-6} L${Dx+7} ${Dy+1}" fill="none" style="stroke:currentColor" stroke-width="1.3"/>`;
+ s+=`<path d="M${Bx+14} ${By-13} L${Bx+21} ${By-10} L${Bx+17} ${By-3}" fill="none" style="stroke:currentColor" stroke-width="1.3"/>`;
+ const lb=(x,y,t)=>`<text x="${x}" y="${y}" class="vt">${t}</text>`;
+ s+=lb(Ax-3,Ay-8,'A')+lb(Bx-14,By+8,'B')+lb(Cx+6,Cy+8,'C')+lb(Dx-16,Dy+4,'D')+lb(Ex+8,Ey+4,'E');
+ if(v.ade)s+=`<text x="${Dx-2}" y="${Dy+20}" class="vts">${v.ade}</text>`;
+ if(v.abc)s+=`<text x="${Bx+6}" y="${By-24}" class="vts">${v.abc}</text>`;
+ if(v.aed)s+=`<text x="${Ex-38}" y="${Ey+20}" class="vts">${v.aed}</text>`;
+ if(v.dec)s+=`<text x="${Ex-6}" y="${Ey+34}" class="vts">${v.dec}</text>`;
+ if(v.note)s+=`<text x="160" y="166" class="vts">${v.note}</text>`;
+ return vizSvg(320,v.note?180:164,v.label,s)}
+
 function renderViz(q){let v=q&&q.viz;if(!v)return '';try{
  if(v.t==='chips')return vizChips(v);if(v.t==='table')return vizTable(v);if(v.t==='bal')return vizBal(v);
  if(v.t==='bar')return vizBar(v);if(v.t==='graph')return vizGraph(v);if(v.t==='rect')return vizRect(v);
  if(v.t==='tri')return vizTri(v);if(v.t==='quad')return vizQuad(v);if(v.t==='angle')return vizAngle(v);
- if(v.t==='rtri')return vizRtri(v);if(v.t==='trih')return vizTriH(v);if(v.t==='par')return vizPar(v);if(v.t==='xl')return vizX(v);
+ if(v.t==='rtri')return vizRtri(v);if(v.t==='trih')return vizTriH(v);if(v.t==='par')return vizPar(v);if(v.t==='xl')return vizX(v);if(v.t==='rectsq')return vizRectSq(v);if(v.t==='rectsplit')return vizRectSplit(v);if(v.t==='rectpt')return vizRectPt(v);if(v.t==='rectdiag')return vizRectDiag(v);if(v.t==='pole')return vizPole(v);if(v.t==='tripar')return vizTriPar(v);if(v.t==='triext')return vizTriExt(v);if(v.t==='par2')return vizPar2(v);if(v.t==='trapz')return vizTrapz(v);if(v.t==='tride')return vizTriDE(v);
+ 
  if(v.t==='expr')return vizExpr(v);if(v.t==='nl')return vizNl(v)}catch(e){return ''}return ''}
 function vizChips(v){
  let grp=items=>items.map(it=>{if(it.op)return `<span class="vop">${it.op}</span>`;let n=it.n||1,out='';for(let i=0;i<n;i++){let cr=it.cross||(it.crossLast&&i>=n-it.crossLast);out+=`<span class="vchip${it.alt?' alt':''}${it.hl?' hl':''}${cr?' cross':''}">${it.l}</span>`}return out}).join('');
