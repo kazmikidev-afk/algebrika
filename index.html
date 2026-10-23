@@ -256,7 +256,7 @@ T.xpythag=[
  ()=>{const[a,b,c]=pick([[20,15,25],[12,16,20],[15,8,17],[6,8,10],[9,12,15],[12,5,13],[24,7,25],[8,6,10]]);const ds=DS(b,c-a,a+b-c+2*Math.round(c/2),b+2,b-2>0?b-2:b+3,Math.round(c/2)+5);if(!ds)return null;
   return[`במלבן ABCD מעבירים את האלכסון AC. נתון: AB=${a} ס"מ, AC=${c} ס"מ. מה אורך הצלע BC בס"מ?`,`${b}`,ds,`במלבן כל הזוויות ישרות, ולכן ABC משולש ישר־זווית והאלכסון הוא היתר.`,`BC²=${c}²−${a}².`,`BC²=${c*c}−${a*a}=${c*c-a*a} ← BC=${b} ס"מ.`,'ביניים',{t:'rectdiag',ab:a+" ס\"מ",ac:c+" ס\"מ",bc:'?',label:'מלבן עם אלכסון'}]},
  ()=>{const[a,b,c]=pick([[20,15,25],[12,16,20],[6,8,10],[9,12,15],[12,5,13],[8,6,10]]);const eb=a/2;const t=eb*b/2;const g=gcd(t,a*b);const ans=(t/g)+':'+(a*b/g);const ds=DS(ans,'1:2','1:3','1:6','1:8');if(!ds)return null;
-  return[`במלבן ABCD מעבירים את האלכסון AC. AB=${a} ס"מ, AC=${c} ס"מ. הנקודה E היא אמצע הצלע AB. מהו היחס בין שטח המשולש EBC לשטח המלבן ABCD?`,`${M(ans)}`,ds,`קודם BC בפיתגורס. משולש EBC ישר־זווית עם שוקיים EB=${eb} ו־BC.`,`BC=${b}. שטח EBC=${eb}·${b}÷2. שטח המלבן: ${a}·${b}.`,`BC=${b}. EBC: ${eb}·${b}÷2=${t}. מלבן: ${a*b}. היחס ${t}:${a*b} = ${ans}.`,'מתקדם',{t:'rectdiag',ab:a+" ס\"מ",ac:c+" ס\"מ",label:'מלבן עם אלכסון ונקודת אמצע'}]},
+  return[`במלבן ABCD מעבירים את האלכסון AC. AB=${a} ס"מ, AC=${c} ס"מ. הנקודה E היא אמצע הצלע AB. מהו היחס בין שטח המשולש EBC לשטח המלבן ABCD?`,`${M(ans)}`,ds,`קודם BC בפיתגורס. משולש EBC ישר־זווית עם שוקיים EB=${eb} ו־BC.`,`BC=${b}. שטח EBC=${eb}·${b}÷2. שטח המלבן: ${a}·${b}.`,`BC=${b}. EBC: ${eb}·${b}÷2=${t}. מלבן: ${a*b}. היחס ${t}:${a*b} = ${ans}.`,'מתקדם',{t:'rectdiag',em:1,ab:a+" ס\"מ",ac:c+" ס\"מ",label:'מלבן עם אלכסון ונקודת אמצע E וקטע EC'}]},
  ()=>{const[h,df,lg]=pick([[12,5,13],[4,3,5],[8,15,17],[6,8,10],[3,4,5],[9,12,15],[12,16,20],[24,7,25],[20,15,25]]);const b=ri(4,12);const B=b+df;const area=(B+b)*h/2;const ds=DS(area,(B+b)*h,B*h+lg,(B+b+lg)*2,area+h);if(!ds)return null;
   return[`ABCD טרפז ישר־זווית: AB ∥ CD ו־AD ⊥ AB. נתון: AB=${B} ס"מ, CD=${b} ס"מ, AD=${h} ס"מ. מה שטח הטרפז בסמ"ר?`,`${area}`,ds,`שטח טרפז = (סכום הבסיסים · הגובה) ÷ 2. הגובה הוא AD.`,`(${B}+${b})·${h} ÷ 2.`,`שטח = (${B}+${b})·${h}÷2 = ${B+b}·${h}÷2 = ${area} סמ"ר.`,'ביניים',{t:'trapz',ab:B+' ס"מ',cd:b+' ס"מ',ad:h+' ס"מ',label:'טרפז ישר זווית'}]},
  ()=>{const[h,df,lg]=pick([[12,5,13],[4,3,5],[8,15,17],[6,8,10],[9,12,15],[12,16,20],[20,15,25]]);const b=ri(4,12);const B=b+df;const p=B+b+h+lg;const ds=DS(p,p-2,p+2,B+b+h*2,B+lg+h+df);if(!ds)return null;
@@ -438,11 +438,19 @@ function vizRectPt(v){ // מלבן עם נקודה E על AB וקטעים ל-D �
  if(v.bc)s+=`<text x="${X+W+8}" y="${Y+H/2}" class="vt">${v.bc}</text>`;
  if(v.note)s+=`<text x="160" y="182" class="vts">${v.note}</text>`;
  return vizSvg(320,v.note?196:170,v.label,s)}
-function vizRectDiag(v){ // מלבן עם אלכסון מ-A ל-C
+function vizRectDiag(v){ // מלבן עם אלכסון מ-A ל-C (אופציונלי: נקודת אמצע E על AB וקטע EC)
  let X=60,Y=26,W=220,H=120;
  let s=`<rect x="${X}" y="${Y}" width="${W}" height="${H}" style="fill:var(--teal2);stroke:var(--teal)" stroke-width="1.8" fill-opacity=".35"/>`;
- s+=`<line x1="${X}" y1="${Y}" x2="${X+W}" y2="${Y+H}" style="stroke:currentColor" stroke-width="1.6"/>`;
  const lb=(x,y,t)=>`<text x="${x}" y="${y}" class="vt">${t}</text>`;
+ if(v.em){ // משולש EBC מודגש: E באמצע AB, קטע E-C
+  const Ex=X+W/2;
+  s+=`<polygon points="${Ex},${Y} ${X+W},${Y} ${X+W},${Y+H}" style="fill:var(--teal)" stroke="none" fill-opacity=".18"/>`;
+  s+=`<line x1="${Ex}" y1="${Y}" x2="${X+W}" y2="${Y+H}" style="stroke:currentColor" stroke-width="1.6" stroke-dasharray="5 4"/>`;
+  s+=`<line x1="${Ex-5}" y1="${Y-4}" x2="${Ex-5}" y2="${Y+4}" style="stroke:currentColor" stroke-width="1.3"/>`;
+  s+=`<line x1="${Ex+5}" y1="${Y-4}" x2="${Ex+5}" y2="${Y+4}" style="stroke:currentColor" stroke-width="1.3"/>`;
+  s+=lb(Ex-4,Y-8,'E');
+ }
+ s+=`<line x1="${X}" y1="${Y}" x2="${X+W}" y2="${Y+H}" style="stroke:currentColor" stroke-width="1.6"/>`;
  s+=lb(X-14,Y+2,'A')+lb(X+W+6,Y+2,'B')+lb(X+W+6,Y+H+6,'C')+lb(X-14,Y+H+6,'D');
  if(v.ab)s+=`<text x="${X+W/2}" y="${Y-8}" class="vt">${v.ab}</text>`;
  if(v.bc)s+=`<text x="${X+W+8}" y="${Y+H/2+4}" class="vt">${v.bc}</text>`;
