@@ -2,7 +2,7 @@ const M=s=>'<span class="math" dir="ltr">'+s+'</span>';
 const MOCK1={id:'mock-test-1',title:'מבחן תרגול 1: יחס, פרופורציה, קנה מידה, אחוזים וחזקות',minutes:45,
 intro:'מבחן תרגול באלגבריקה, בנוי לפי מה שנלמד בשיעורים האחרונים: יחס, פרופורציה, קנה מידה ואחוזים, ובסוף חזקות.',
 getState:()=>state,save:()=>save(),viz:{},
-mount(open){const w=document.getElementById('weak');if(w){const b=document.createElement('button');b.className='btn';b.id='mockHome';b.textContent='מבחן תרגול ראשון';b.onclick=()=>{open();history.replaceState(null,'',location.pathname+location.search+'#mock-test-1')};w.after(b)}},
+mount(open){const w=document.getElementById('weak');if(w){const b=document.createElement('button');b.className='btn';b.id='mockHome';b.textContent='מבחן תרגול 1: יחס ואחוזים';b.onclick=()=>{open();history.replaceState(null,'',location.pathname+location.search+'#mock-test-1')};w.after(b)}},
 qs:[
 {t:'יחס',p:'בכיתה 12 בנים ו־18 בנות. מה היחס בנים:בנות בצורתו הפשוטה ביותר? כתבו למשל 4:5.',a:['2:3']},
 {t:'יחס',p:'באותה כיתה: איזה חלק מכל התלמידים הן הבנות? כתבו שבר, למשל 1/4.',a:['3/5']},
@@ -30,7 +30,7 @@ const MOCK2={id:'mock-test-2',title:'מבחן תרגול 2: הכנה למבחן 
 intro:'מבחן תרגול מלא לפי טבלת המיקוד: משוואות עם חוק הפילוג, מינוס לפני סוגריים, שאלות מילוליות, יחס ופרופורציה וקנה מידה, זוויות ומקבילים, משולש ומשפט פיתגורס. זהו מבחן תרגול בלבד ולא חומר רשמי של בית הספר.',
 getState:()=>state,save:()=>save(),
 viz:{rtri:q=>vizRtri(q.v),par:q=>vizPar(q.v),trih:q=>vizTriH(q.v),angle:q=>vizAngle(q.v),xl:q=>vizX(q.v)},
-mount(open){const w=document.getElementById('examMockSlot');if(w){const b=document.createElement('button');b.className='btn';b.id='mockExam';b.textContent='🎯 מבחן תרגול מלא - 25.10';b.onclick=()=>{open();history.replaceState(null,'',location.pathname+location.search+'#mock-test-2')};w.append(b)}},
+mount(open){const w=document.getElementById('examMockSlot');if(w){const b=document.createElement('button');b.className='btn';b.id='mockExam';b.textContent='🎯 מבחן תרגול מלא בקצב שעון';b.onclick=()=>{open();history.replaceState(null,'',location.pathname+location.search+'#mock-test-2')};w.append(b)}},
 qs:[
 {t:'חוק הפילוג',p:'פתרו את המשוואה: '+M('4(x+3)=32'),a:['5']},
 {t:'חוק הפילוג',p:'פתרו את המשוואה: '+M('3(2x-1)=4x+9'),a:['6']},
