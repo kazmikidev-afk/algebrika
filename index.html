@@ -93,24 +93,24 @@ T.xeqminus=[
  ()=>{const a=ri(5,15),b=ri(2,7),c=ri(1,9);const ans=E(-b,a-c);const ds=DS(ans,E(-b,a+c),E(b,a-c),E(b,c-a),E(-b,a-c+1),E(-b,a-c-1));if(!ds)return null;
   return[`פשטו: ${M(`${a}-(${b}x+${c})`)}`,ans,ds,`המינוס מחליף סימן לכל איבר בסוגריים, גם ל־${c}.`,`${a}-${b}x-${c}.`, `${a}-(${b}x+${c})=${a}-${b}x-${c}=${ans}.`,'בסיסי']},
  ()=>{const a=ri(4,9),b=ri(2,a-1),c=ri(1,9);const ans=E(a-b,-c);const ds=DS(ans,E(a-b,c),E(a+b,-c),E(a+b,c),E(a-b-1,-c));if(!ds)return null;
-  return[`פשטו: ${M(`${a}x-(${b}x+${c})`)}`,ans,ds,`גם ${b}x וגם ${c} מחליפים סימן.`,`${a}x-${b}x-${c}.`,`${a}x-(${b}x+${c})=${a-b}x-${c}.`,'בסיסי']},
+  return[`פשטו: ${M(`${a}x-(${b}x+${c})`)}`,ans,ds,`גם ${b}x וגם ${c} מחליפים סימן.`,`${a}x-${b}x-${c}.`,`${a}x-(${b}x+${c})=${a-b==1?'':a-b}x-${c}.`,'בסיסי']},
  ()=>{const a=ri(4,9),b=ri(2,a-1),c=ri(2,9);const ans=E(a-b,c);const ds=DS(ans,E(a-b,-c),E(a+b,c),E(a+b,-c),E(a-b,c+1));if(!ds)return null;
-  return[`פשטו: ${M(`${a}x-(${b}x-${c})`)}`,ans,ds,`מינוס מול מינוס הופך לפלוס: -(-${c})=+${c}.`,`${a}x-${b}x+${c}.`,`${a}x-(${b}x-${c})=${a-b}x+${c}.`,'ביניים']},
+  return[`פשטו: ${M(`${a}x-(${b}x-${c})`)}`,ans,ds,`מינוס מול מינוס הופך לפלוס: -(-${c})=+${c}.`,`${a}x-${b}x+${c}.`,`${a}x-(${b}x-${c})=${a-b==1?'':a-b}x+${c}.`,'ביניים']},
  ()=>{const x=ri(-7,9),b=ri(2,6),a=ri(6,15),c=ri(1,5);const d=a-c-b*x;if(d===0)return null;const ds=DS(x,-x,x+1,x-1,(a-d)/b|0===x?x+2:((a-d)/b)|0);if(!ds)return null;
   return[`פתרו: ${M(`${a}-(${b}x+${c})=${d}`)}`,`${x}`,ds,`פתחו: ${a}-${b}x-${c}=${d}.`,`-${b}x=${d-a+c}. חלקו ב־(-${b}).`,`${a}-${b}x-${c}=${d} ← -${b}x=${d-a+c} ← x=${x}. בדיקה: ${a}-(${b*x}+${c})=${a-(b*x+c)}.`,'ביניים']},
  ()=>{const x=ri(-6,9),a=ri(4,9),b=ri(2,a-1),c=ri(2,9);const d=(a-b)*x+c;const ds=DS(x,-x,x+1,x-1,x+c);if(!ds)return null;
-  return[`פתרו: ${M(`${a}x-(${b}x-${c})=${d}`)}`,`${x}`,ds,`-${b}x מחליף סימן, וגם -(-${c})=+${c}.`,`${a-b}x=${d-c}.`,`${a}x-${b}x+${c}=${d} ← ${a-b}x=${d-c} ← x=${x}.`,'ביניים']},
+  return[`פתרו: ${M(`${a}x-(${b}x-${c})=${d}`)}`,`${x}`,ds,`-${b}x מחליף סימן, וגם -(-${c})=+${c}.`,`${a-b==1?'':a-b}x=${d-c}.`,`${a}x-${b}x+${c}=${d} ← ${a-b==1?'':a-b}x=${d-c} ← x=${x}.`,'ביניים']},
  ()=>{const x=ri(-7,8),b=ri(2,6),a=ri(3,12),c=ri(1,9);const d=a+c-b*x;if(d===0)return null;const ds=DS(x,-x,x+1,x-1,x+c);if(!ds)return null;
   return[`פתרו: ${M(`${a}-(${b}x-${c})=${d}`)}`,`${x}`,ds,`זהירות: -(${b}x-${c})=-${b}x+${c}.`,`-${b}x=${d-a-c}.`,`${a}-${b}x+${c}=${d} ← -${b}x=${d-a-c} ← x=${x}. בדיקה: ${a}-(${b*x}-${c})=${a-(b*x-c)}.`,'מתקדם']},
  ()=>{const x=ri(-6,9),a=ri(5,9),b=ri(2,4),e=ri(1,8),c=ri(1,8);const d=(a-b)*x+e-c;const ds=DS(x,-x,x+1,x-1,x+e);if(!ds)return null;
-  return[`פתרו: ${M(`${a}x+${e}-(${b}x+${c})=${d}`)}`,`${x}`,ds,`פתחו את הסוגריים עם החלפת סימנים.`,`${a-b}x=${d-e+c}.`,`${a}x+${e}-${b}x-${c}=${d} ← ${a-b}x=${d-e+c} ← x=${x}.`,'מתקדם']},
+  return[`פתרו: ${M(`${a}x+${e}-(${b}x+${c})=${d}`)}`,`${x}`,ds,`פתחו את הסוגריים עם החלפת סימנים.`,`${a-b==1?'':a-b}x=${d-e+c}.`,`${a}x+${e}-${b}x-${c}=${d} ← ${a-b==1?'':a-b}x=${d-e+c} ← x=${x}.`,'מתקדם']},
  ()=>{const a=ri(2,4),b=ri(2,5),c=ri(1,6),d=ri(2,7),e=ri(1,9);const px=a*b-d,qx=a*c-e;const ans=E(px,qx);const ds=DS(ans,E(px,a*c+e),E(a*b+d,qx),E(px,qx+1),E(px,qx-1),E(a*b-d,a*c+ e));if(!ds)return null;
   return[`פשטו: ${M(`${a}(${b}x+${c})-(${d}x+${e})`)}`,ans,ds,`קודם חוק הפילוג, ואז מינוס על כל הסוגריים השניים.`,`${a*b}x+${a*c}-${d}x-${e}.`,`${a}(${b}x+${c})-(${d}x+${e})=${a*b}x+${a*c}-${d}x-${e}=${ans}.`,'מתקדם']},
  // === צורת משוואה מסימולציות 3-6: a(bx−c)=dx−(e−fx) ===
  ()=>{for(let k=0;k<90;k++){const a=ri(2,5),b=ri(1,3),x=ri(2,12);const ab=a*b;const d=ri(2,ab-2),f=ri(1,3);const g=ab-d-f;if(g<1||g>3)continue;const c=ri(2,9);const e=a*c-x*g;if(e<1||e>15)continue;const ds=DS(x,x+1,x-1>0?x-1:x+3,x+2,-x,Math.round((a*c+e)/g));if(!ds)continue;const L=ab*x-a*c,R=d*x-(e-f*x);const pe=e+'−'+(f==1?'':f)+'x';
-  return[`פתרו: ${M(`${a}(${E(b,-c)})=${d==1?'':d}x−(${pe})`)}`,`${x}`,ds,`מינוס לפני סוגריים מחליף סימן לכל איבר: −(${pe})=−${e}+${f==1?'':f}x.`,`פתחו: ${ab}x−${a*c}=${d+f}x−${e}.`,`${ab}x−${a*c}=${d+f}x−${e} ← ${g}x=${a*c-e} ← x=${x}. בדיקה: אגף שמאל ${a}·(${b*x-c})=${L}, אגף ימין ${d*x}−(${e-f*x})=${R}.`,'מתקדם']}},
- ()=>{for(let k=0;k<90;k++){const fr=pick([[3,4,'¾'],[1,2,'½'],[1,4,'¼']]);const fn=fr[0],fd=fr[1],fc=fr[2];const b=pick([4,8,12]),c=pick([4,8]);if((fn*b)%fd||(fn*c)%fd)continue;const A=fn*b/fd,C=fn*c/fd;const x=ri(2,9);const d=ri(1,A+1),f=ri(1,2);const g=A-d+f;if(g<1||g>4)continue;const e=x*g-C;if(e<1||e>12)continue;const ds=DS(x,x+1,x-1>0?x-1:x+3,x+2,Math.round((e+C)/A));if(!ds)continue;const L=A*x-C,R=d*x+(e-f*x);const pe=e+'−'+(f==1?'':f)+'x';
-  return[`פתרו: ${M(`${fc}(${E(b,-c)})=${d==1?'':d}x+(${pe})`)}`,`${x}`,ds,`כופלים את ${fc} בכל איבר בסוגריים: ${fc}·${b}x=${A}x ו־${fc}·${c}=${C}.`,`${A}x−${C}=${d-f}x+${e}.`,`${A}x−${C}=${d-f}x+${e} ← ${g}x=${e+C} ← x=${x}. בדיקה: שמאל ${fc}·(${b*x-c})=${L}, ימין ${d*x}+(${e-f*x})=${R}.`,'מתקדם']}}
+  return[`פתרו: ${M(`${a}(${E(b,-c)})=${d==1?'':d}x−(${pe})`)}`,`${x}`,ds,`מינוס לפני סוגריים מחליף סימן לכל איבר: −(${pe})=−${e}+${f==1?'':f}x.`,`פתחו: ${ab}x−${a*c}=${d+f}x−${e}.`,`${ab}x−${a*c}=${d+f}x−${e} ← ${g==1?'x='+x:g+'x='+(a*c-e)+' ← x='+x}. בדיקה: אגף שמאל ${a}·(${b*x-c})=${L}, אגף ימין ${d*x}−(${e-f*x})=${R}.`,'מתקדם']}},
+ ()=>{for(let k=0;k<90;k++){const fr=pick([[3,4,'¾'],[1,2,'½'],[1,4,'¼']]);const fn=fr[0],fd=fr[1],fc=fr[2];const b=pick([4,8,12]),c=pick([4,8]);if((fn*b)%fd||(fn*c)%fd)continue;const A=fn*b/fd,C=fn*c/fd;const x=ri(2,9);const d=ri(1,A+1),f=ri(1,2);const g=A-d+f;if(g<1||g>4||d<=f)continue;const e=x*g-C;if(e<1||e>12)continue;const ds=DS(x,x+1,x-1>0?x-1:x+3,x+2,Math.round((e+C)/A));if(!ds)continue;const L=A*x-C,R=d*x+(e-f*x);const pe=e+'−'+(f==1?'':f)+'x';
+  return[`פתרו: ${M(`${fc}(${E(b,-c)})=${d==1?'':d}x+(${pe})`)}`,`${x}`,ds,`כופלים את ${fc} בכל איבר בסוגריים: ${fc}·${b}x=${A}x ו־${fc}·${c}=${C}.`,`${A}x−${C}=${d-f==1?'':d-f}x+${e}.`,`${A}x−${C}=${d-f==1?'':d-f}x+${e} ← ${g==1?'x='+x:g+'x='+(e+C)+' ← x='+x}. בדיקה: שמאל ${fc}·(${b*x-c})=${L}, ימין ${d*x}+(${e-f*x})=${R}.`,'מתקדם']}}
 ];
 T.xeqword=[
  ()=>{const x=ri(3,15),b=ri(2,10);const s=2*x+b;const ds=DS(x,x+b,x+1,x-1>0?x-1:x+2,Math.round(s/2));if(!ds)return null;
