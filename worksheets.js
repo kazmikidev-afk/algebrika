@@ -145,7 +145,9 @@
 
   /* ---------- persistence: same algebrika-v3 state, existing state.hw subkey ---------- */
   function hwState(setId) {
-    if (typeof state === 'undefined') return {};
+    let hasState = false;
+    try { hasState = typeof state !== 'undefined' && !!state; } catch (e) { hasState = false; }
+    if (!hasState) return {};
     state.hw = state.hw || {};
     state.hw[setId] = state.hw[setId] || {};
     return state.hw[setId];
@@ -317,7 +319,11 @@
     }
   }
 
-  addEntries();
-  if (location.hash === '#worksheets') openLibrary();
+  function start() {
+    addEntries();
+    if (location.hash === '#worksheets') openLibrary();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
   window.addEventListener('hashchange', () => { if (location.hash === '#worksheets') openLibrary(); });
 })();
