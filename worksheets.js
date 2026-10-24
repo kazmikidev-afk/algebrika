@@ -101,7 +101,8 @@
     const v = String(raw ?? '').trim();
     if (!v) return false;
     if (q.multi) {
-      const nums = v.match(/-?\d+(?:[.,]\d+)?/g) || [];
+      const cleaned = v.replace(/([\u05d0-\u05ea])-(\d)/g, '$1$2'); /* Hebrew connector ו- is not a minus */
+      const nums = cleaned.match(/-?\d+(?:[.,]\d+)?/g) || [];
       return q.multi.every(req => nums.some(t => eqTok(t, req)));
     }
     const cands = [v];
