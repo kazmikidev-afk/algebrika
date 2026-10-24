@@ -29,15 +29,19 @@
   };
 
   /* ---------- answer matching (exact-value, unit-tolerant, multi-token) ---------- */
-  function keyOf(s) {
-    const t = String(s ?? '').replace(/[−–—]/g, '-').replace(/[.,](?=\d{3}\b)/g, '').trim();
-    const k = t.replace(/[^\d.,:+\-/]/g, '');
-    return (k && /\d/.test(k)) ? k : t.replace(/\s+/g, '');
+  function normTok(s) {
+    return String(s ?? '').replace(/[−–—]/g, '-').replace(/\s+/g, '')
+      .replace(/שורש/g, '√').replace(/sqrt\(?/g, '√').replace(/\)/g, '')
+      .replace(/^x=/i, '').replace(/[.,](?=\d{3}\b)/g, '').toLowerCase();
   }
   function eqTok(a, b) {
-    const A = keyOf(a), B = keyOf(b);
+    const A = normTok(a), B = normTok(b);
     if (A === B) return true;
-    const x = Number(A.replace(',', '.')), y = Number(B.replace(',', '.'));
+    if (A.includes('√') || B.includes('√')) return false; /* radicals: exact form only */
+    const ka = A.replace(/[^\d.,:+\-/]/g, ''), kb = B.replace(/[^\d.,:+\-/]/g, '');
+    const X = (ka && /\d/.test(ka)) ? ka : A, Y = (kb && /\d/.test(kb)) ? kb : B;
+    if (X === Y) return true;
+    const x = Number(X.replace(',', '.')), y = Number(Y.replace(',', '.'));
     return isFinite(x) && isFinite(y) && Math.abs(x - y) < 1e-9;
   }
   function matchQ(q, raw) {
@@ -135,7 +139,7 @@
         { p: 'במשולש ישר־זווית הניצבים 6 ס״מ ו־8 ס״מ. מצאו את היתר.', fig: FIG.rt(6, 8, 'x', 'c'), a: ['10', '10 ס״מ'], hint: 'c²=6²+8²=36+64=100.' },
         { p: 'במשולש ישר־זווית הניצבים 5 ס״מ ו־12 ס״מ. מצאו את היתר.', a: ['13', '13 ס״מ'], hint: 'c²=25+144=169.' },
         { p: 'במשולש ישר־זווית היתר 15 ס״מ וניצב אחד 9 ס״מ. מצאו את הניצב השני.', fig: FIG.rt('x', 9, 15, 'a'), a: ['12', '12 ס״מ'], hint: 'a²=15²-9²=225-81=144.' },
-        { p: 'במשולש ישר־זווית הניצבים 2 ס״מ ו־6 ס״מ. מצאו את היתר (עיגול לשני מקומות אחרי הנקודה).', a: ['6.32'], hint: 'c²=2²+6²=4+36=40, כלומר c=√40≈6.32.' },
+        { p: 'במשולש ישר־זווית הניצבים 2 ס״מ ו־6 ס״מ. מצאו את היתר (התשובה אינה עגולה — אפשר שורש מדויק או קירוב).', a: ['√40', '2√10', '6.32', '6.324'], hint: 'c²=2²+6²=4+36=40, כלומר c=√40=2√10≈6.32.' },
         { p: 'במשולש ישר־זווית הניצבים 9 ס״מ ו־12 ס״מ. מצאו את היתר.', a: ['15', '15 ס״מ'], hint: 'c²=81+144=225.' },
         { p: 'במשולש ישר־זווית הניצבים 8 ס״מ ו־15 ס״מ. מצאו את היתר.', a: ['17', '17 ס״מ'], hint: 'c²=64+225=289.' },
         { p: 'סולם באורך 13 מ׳ נשען על קיר. בסיס הסולם 5 מ׳ מהקיר. באיזה גובה הסולם נוגע בקיר?', fig: FIG.rt(5, 'x', 13, 'a'), a: ['12', '12 מ׳'], unit: ['מ׳'], hint: 'x²=13²-5²=169-25=144.' },
