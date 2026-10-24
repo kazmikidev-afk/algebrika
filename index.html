@@ -1402,7 +1402,7 @@ for(const m of v.matchAll(re)){f.append(v.slice(last,m.index));const b=document.
 f.append(v.slice(last));n.replaceWith(f)}}
 wrap(document.body);new MutationObserver(rs=>{for(const r of rs){if(r.type==='characterData')wrap(r.target);else for(const n of r.addedNodes)wrap(n)}}).observe(document.body,{childList:true,subtree:true,characterData:true});})();
 </script>
-<script src="mock-tests.js"></script><script>
+<script src="mock-tests.js"></script><script src="worksheets.js"></script><script>
 /* גיבוי ענן יומי - מנגנון משותף v1 (משרת גיבוי ב-Drive של מיקי) */
 const CB_URL='https://script.google.com/macros/s/AKfycbxmxolfKtSSXUY6ORmRDmK5VxjI6-Px5gNDDNA9fnhQ5-5ta6_NZQvaWj6jXjA46eja/exec',CB_APP='algebrika',CB_CODEKEY='avichai-tracking-v1',CB_KEYS=["algebrika-v3", "avichai-game-v1", "avichai-plan-seen-v1", "avichai-teacher-code-v1", "avichai-tracking-v1"];
 function cbToday(){return new Date().toLocaleDateString('en-CA')}
