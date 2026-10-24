@@ -161,7 +161,7 @@
   function setProgress(set) {
     const h = hwState(set.id);
     const n = set.qs.reduce((s, q, i) => s + (h[i] ? 1 : 0), 0);
-    return n + ' מתוך ' + set.qs.length;
+    return n + ' נכונות מתוך ' + set.qs.length + ' ✓';
   }
 
   /* ---------- UI ---------- */
@@ -206,7 +206,7 @@
       card.innerHTML = '<b>' + set.title + '</b>'
         + '<div style="color:var(--muted);font-size:14px;margin:6px 0">' + set.desc + '</div>'
         + '<div style="display:flex;justify-content:space-between;align-items:center">'
-        + '<span style="color:var(--teal);font-weight:700">' + setProgress(set) + ' ✓</span>'
+        + '<span style="color:var(--teal);font-weight:700">' + setProgress(set) + '</span>'
         + '<button class="btn">פתיחה</button></div>';
       card.onclick = () => openSet(set.id);
       grid.appendChild(card);
@@ -223,7 +223,7 @@
     head.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px';
     head.innerHTML = '<button class="btn ghost" id="wsBack">→ כל דפי העבודה</button>'
       + '<b>' + set.title + '</b>'
-      + '<span style="color:var(--teal);font-weight:700">' + setProgress(set) + ' ✓</span>';
+      + '<span style="color:var(--teal);font-weight:700">' + setProgress(set) + '</span>';
     body.appendChild(head);
     head.querySelector('#wsBack').onclick = renderLibrary;
 
@@ -250,7 +250,7 @@
         doneB.style.marginTop = '6px';
         doneB.textContent = h[i] ? '✓ סומנה' : 'בדקתי — סמנו כנכון';
         if (h[i]) doneB.disabled = true;
-        doneB.onclick = () => { markOk(set.id, i); doneB.disabled = true; doneB.textContent = '✓ סומנה'; box.classList.add('ok'); head.querySelector('span').textContent = setProgress(set) + ' ✓'; };
+        doneB.onclick = () => { markOk(set.id, i); doneB.disabled = true; doneB.textContent = '✓ סומנה'; box.classList.add('ok'); head.querySelector('span').textContent = setProgress(set); };
         box.appendChild(doneB);
         body.appendChild(box);
         return;
@@ -284,7 +284,7 @@
           fb.className = 'feedback show';
           fb.textContent = 'נכון מאוד! ✓';
           markOk(set.id, i);
-          head.querySelector('span').textContent = setProgress(set) + ' ✓';
+          head.querySelector('span').textContent = setProgress(set);
         } else {
           fb.className = 'feedback show';
           fb.textContent = 'לא בדיוק — נסו שוב. אפשר להציץ ברמז.';
