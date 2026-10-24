@@ -159,7 +159,7 @@
   function setProgress(set) {
     const h = hwState(set.id);
     const n = set.qs.reduce((s, q, i) => s + (h[i] ? 1 : 0), 0);
-    return n + '/' + set.qs.length;
+    return n + ' מתוך ' + set.qs.length;
   }
 
   /* ---------- UI ---------- */
