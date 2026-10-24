@@ -7,7 +7,7 @@
     return '<svg viewBox="0 0 220 130" style="width:100%;height:auto;stroke:var(--ink);fill:none" stroke-width="2" font-size="13" font-family="inherit">' + inner + '</svg>';
   }
   function txt(x, y, s, fill) {
-    return '<text x="' + x + '" y="' + y + '" style="fill:' + (fill || 'var(--accent)') + ';stroke:none" text-anchor="middle" font-weight="700">' + s + '</text>';
+    return '<text x="' + x + '" y="' + y + '" style="fill:' + (fill || 'var(--teal)') + ';stroke:none" text-anchor="middle" font-weight="700">' + s + '</text>';
   }
   const FIG = {
     adj70: svg('<line x1="20" y1="95" x2="200" y2="95"/><line x1="115" y1="95" x2="150" y2="30"/>' + txt(160, 88, '70°') + txt(70, 88, 'x')),
